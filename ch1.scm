@@ -4,8 +4,8 @@
 (define atom?
   (lambda (x)
     (and (not (pair? x)) (not (null? x)))))
-#|为什么let中赋值还要再有一个括号?|#
-(let ((l 'turkey)) (atom? l))#|let 表达式的赋值只在表达式内部有效。|#
+#|为什么let中赋值还要再有一个括号? 因为这个括号是为了储存定义好的变量值|#
+(let ((l 'turkey)) (atom? l));let 表达式的赋值只在表达式内部有效。
 (let ((l '1492)) (atom? l))
 (let ((l 'u)) (atom? l))
 (let ((l '*abc$)) (atom? l))
@@ -19,7 +19,7 @@
 (let ((l '(a b c))) (car l))
 (let ((l '((a b c) x y z))) (car l))
 #|(let ((l 'hotdog)) (car l))
-(let ((l '())) (car l))
+  (let ((l '())) (car l))
 不能请求一个原子和空列表的car|#
 
 #|p6|#
@@ -32,7 +32,7 @@
 (let ((l '(hamberger))) (car l))
 (let ((l '((x) t r))) (car l))
 #|(let ((l 'hotdog)) (car l))
-(let ((l '())) (cdr l))
+  (let ((l '())) (cdr l))
 不能请求一个原子和空列表的cdr|#
 
 #|p7|#
