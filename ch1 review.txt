@@ -1,6 +1,6 @@
 1.只使用cons建立列表:(4 3 2)
 Ans：
-(let ((l '(beans beans we need jelly beans))) (eq? (car l) (car (cdr l))))
+(let ((l '())) (cons 4 (cons 3 (cons 2 l))))
 
 2.取列表(4 3 2)中的（3,2）
 Ans：
