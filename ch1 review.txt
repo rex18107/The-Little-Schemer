@@ -1,14 +1,14 @@
 1.只使用cons建立列表:(4 3 2)
 Ans：
-(let ((l '())) (cons 4 (cons 3 (cons 2 l))))
+(cons 4 (cons 3 (cons 2 null)))
 
-2.取列表(4 3 2)中的（3,2）
+2.取列表(4 3 2)中的（3 2）
 Ans：
-(let ((l '(4 3 2))) (car (cdr l)))
+(let ((l '(4 3 2))) (car (cdr (cdr l))))
 
 3.取列表中的4
 Ans：
-(let ((l '(4 3 2))) (car (cdr (cdr l))))
+(let ((l '(4 3 2))) (car (cdr l)))
 
 4.你有`(((hotdogs))(and)(pickle)relish))))，使用cdr car取出pickle
 
