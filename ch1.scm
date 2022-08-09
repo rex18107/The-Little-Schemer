@@ -4,7 +4,7 @@
 (define atom?
   (lambda (x)
     (and (not (pair? x)) (not (null? x)))))
-;为什么let中赋值还要再有一个括号? 因为这个括号是为了储存定义好的变量值
+;为什么let中赋值还要再有一个括号? 因为这个括号是代码的偏好设计
 (let ((l 'turkey)) (atom? l));let 表达式的赋值只在表达式内部有效。
 (let ((l '1492)) (atom? l))
 (let ((l 'u)) (atom? l))
@@ -18,9 +18,9 @@
 ;p5
 (let ((l '(a b c))) (car l))
 (let ((l '((a b c) x y z))) (car l))
-#|(let ((l 'hotdog)) (car l))
-  (let ((l '())) (car l))
-不能请求一个原子和空列表的car|#
+;(let ((l 'hotdog)) (car l))
+;(let ((l '())) (car l))
+;不能请求一个原子和空列表的car
 
 ;p6
 (let ((l '(((hotdogs)) (and) (pickle) relish)))
@@ -33,12 +33,12 @@
 (let ((l '((x) t r))) (car l))
 ;(let ((l 'hotdog)) (car l))
 ;(let ((l '())) (cdr l))
-;不能请求一个原子和空列表的cdr|#
+;不能请求一个原子和空列表的cdr
 
 ;p7
-(let ((l '((b) (x y) ((c))))) (cdr (cdr l)))#|答案是 （（（c））），因为任意非空列表的cdr总是另一个列表|#
+(let ((l '((b) (x y) ((c))))) (cdr (cdr l)));答案是 （（（c））），因为任意非空列表的cdr总是另一个列表|#
 (let ((l '((b) (x y) ((c))))) (cdr (cdr l)))
-#|(let ((l '(a (b (c)) d))) (cdr (car l))) 因为（car l）是个原子，cdr不能以原子为参数|#
+;(let ((l '(a (b (c)) d))) (cdr (car l))) 因为（car l）是个原子，cdr不能以原子为参数
 
 ;p8
 (let ((a 'peanut) (l '(butter and jelly))) (cons a l))
@@ -47,8 +47,7 @@
 (let ((s '((help) this))(l '(is very ((hard) to learn)))) (cons s l))
 (let ((s '(a b (c)))(l '())) (cons s l))
 (let ((s 'a)(l '())) (cons s l))
-;(let ((s '((a b c)))(l 'b)) (cons s l))
-;不会有答案，因为第二个参数l必须是列表
+;(let ((s '((a b c)))(l 'b)) (cons s l)) 不会有答案，因为第二个参数l必须是列表
 ;(let ((s 'a)(l 'b)) (cons s l)) 不会有答案
 
 ;p9

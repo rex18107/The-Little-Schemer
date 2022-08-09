@@ -4,11 +4,11 @@ Ans：
 
 2.取列表(4 3 2)中的（3 2）
 Ans：
-(let ((l '(4 3 2))) (car (cdr (cdr l))))
+(cdr '(4 3 2))
 
 3.取列表中的4
 Ans：
-(let ((l '(4 3 2))) (car (cdr l)))
+(car '(4 3 2))
 
 4.你有`(((hotdogs))(and)(pickle)relish))))，使用cdr car取出pickle
 
