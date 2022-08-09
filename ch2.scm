@@ -35,6 +35,7 @@
     (cond
       ((null? lat) #f)
       (else (or (eq? a (car lat)) (member? a (cdr lat)))))))
+;member函数是判断元素a是否为列表lat里的元素
 (let ((a 'tea) (lat '(coffee tea or milk))) (member? a (cdr lat)))
 (let ((a 'poached) (lat '(fried eggs and scrambled eggs))) (member? a (cdr lat)))
 
