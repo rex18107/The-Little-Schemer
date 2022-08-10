@@ -1,13 +1,13 @@
 #lang scheme
 
 ;p34
-;(define rember
+#;(define rember
      (lambda (a lat)
       (cond
        ((null? lat) '())
        ((eq? a (car lat)) (cdr lat))
       (else
-       (rember a (cdr lat)
+       (rember a (cdr lat))))))
 ;rember函数是去除列表lat中的第一个a原子
 ;上部分代码是不完整的，代码的结果很可能会缺少(car lat)及其函数递归后的（car lat）
 
