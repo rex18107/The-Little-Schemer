@@ -43,10 +43,10 @@ Ans2（这是我在没看填空的情况先完成的，但是用到了后面章�
         ________________
   ))
 Ans：
-(define (product_all n)
+(define (product_all l)
   (cond
-   ((null? n) 1)
-   (else (* (car n) (product_all (cdr n))))))
+   ((null? l) 1)
+   (else (* (car l) (product_all (cdr l))))))
 
 4.实现一个函数，比较给出的列表中是否含有数字44？
 
@@ -60,10 +60,18 @@ Ans：
 (find_44 `(34 44 11)) ;#t
 (find_44 `(34 11)) ;#f
 Ans：
-(define (find_44 n)
+(define (find_44 l)
   (cond
-    ((null? n) #f)
-    (else (or (eq? (car n) 44) (find_44 (cdr n))))))
+    ((null? l) #f)
+    (else (or (eq? (car l) 44) (find_44 (cdr l))))))
+
+以下是奈奈的做法
+(define (find_44 list)
+  (cond ((null? list) #f)
+         ((eq? (car list) 44) #t)
+        (else (find_44 (cdr list)))
+  ))
+奈奈的做法更好，可以省略or这一步但是不太清楚，增加or主要是影响内存还是时间
 
 
 5.可选挑战题：
