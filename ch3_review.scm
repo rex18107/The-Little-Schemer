@@ -32,7 +32,7 @@
   (cond
     ((eq? n 1) '(100));如果n为1,代表递归结束，这是个结束条件
     (else (insertR (* n 100) (* (- n 1) 100) (build_list (- n 1))))))
-    ;(* n 100)这个元素为函数的开始条件，利用insertR函数将值最大的数值往(build_list （- n 1))的最后一个元素右边插入
+    ;(* n 100)这个元素为函数的开始条件，利用insertR函数将最大的数值(* n 100)往(build_list （- n 1))的最后一个元素右边插入
 
 
 
@@ -42,12 +42,13 @@
 
 
 #;
+
 (define (reverse lst)
   (cond
-    ((null? lst) '());当列表为空时需要返回空列表
-    (else (insertR (car lat) (car (cdr lat)) (reverse (cdr lst)))))); (car (cdr lat))表达式会有一个问题，当lst为'（d）情况时，程序报错，因为car的参数不能为空列表
+    ((null? (cdr lst))  lst);这是reverse函数的终止条件，可以解决下一行注释问题
+    (else (insertR (car lst) (car (cdr lst)) (reverse (cdr lst)))))); (car (cdr lat))表达式会有一个问题，当lst为'（d）情况时，程序报错，因为car的参数不能为空列表
 ;将列表的第一个元素移到列表第二个元素右边，再引入参数（cdr lst）到reverse函数中。
-;递归的重要思想就是先找到第一步的过程，尔后第二、第三乃至第n直接调用递归函数
+;递归的重要思想就是先找到第一步的过程，尔后第二、第三乃至第n步直接调用递归函数
 
 
 ;(reverse '(1 2 3) #(3 2 1)
@@ -61,13 +62,17 @@
   (lambda (x)
     (and (not (pair? x)) (not (null? x)))))
 
+
+(define (pick_list_reverse lst) ;设计一个函数将一个列表里的子元素列表内部全部先反转
+  (cond
+   ((null? lst) '())
+   ((list? (car lst)) (cons (insertR (car (car lst)) (car (cdr (car lst))) (reverse (cdr (car lst)))) (cdr lst))) ;(insertR (car (car lst)) (car (cdr (car lst))) (reverse (cdr (car lst))))这行代码是解决lst列表遇到元素是列表时也要反转的情况
+  (else  (cons (car lst) (pick_list_reverse (cdr lst))))))        
 (define (reverse_nested lst)
   (cond
-    ((null? lst) '());当列表为空时需要返回空列表
-    ((atom? (car lst)) (insertR (car lst) (car (cdr lst)) (reverse_nested (cdr lst)))); (car (cdr lat))表达式会有一个问题,当lst为'(d)情况时,程序报错,因为car的参数不能为空列表
-    (else (insertR (car (car lst)) (car (car (cdr lst))) (reverse_nested (cdr (car lst)))))));(car (car (cdr lst)))跟上注释同理
-    
-  (reverse_nested '(1 2 3))
+    ((null? (cdr lst))  lst);这是reverse_nested函数的终止条件,可以解决下一行注释的问题
+    ((atom? (car lst)) (insertR (car lst) (car (cdr lst)) (reverse_nested (cdr lst)))); (car (cdr lst))表达式会有一个问题,当lst为'(d)情况时,程序报错,因为car的参数不能为空列表
+    (else (reverse (pick_list_reverse lst)))));本意是希望先将一个列表里的子元素列表内部全部先反转,再调用reverse反转整个lst,但没成功
 
 
 ;(reverse_nested: '(1 2 3) #(3 2 1)
