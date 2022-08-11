@@ -72,7 +72,7 @@
   (cond
     ((null? (cdr lst))  lst);这是reverse_nested函数的终止条件,可以解决下一行注释的问题
     ((atom? (car lst)) (insertR (car lst) (car (cdr lst)) (reverse_nested (cdr lst)))); (car (cdr lst))表达式会有一个问题,当lst为'(d)情况时,程序报错,因为car的参数不能为空列表
-    (else (reverse (pick_list_reverse lst)))));本意是希望先将一个列表里的子元素列表内部全部先反转,再调用reverse反转整个lst,但没成功
+    (else (reverse (pick_list_reverse lst)))));本意是希望先将一个列表里的子元素列表内部全部先反转,再调用reverse反转整个lst,但没成功，这个想法其实不对，
 
 
 ;(reverse_nested: '(1 2 3) #(3 2 1)
