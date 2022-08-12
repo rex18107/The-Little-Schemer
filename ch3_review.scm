@@ -42,7 +42,7 @@
 
 
 #;
-
+; version 1
 (define (reverse lst)
   (cond
     ((null? (cdr lst))  lst);这是reverse函数的终止条件，可以解决下一行注释问题
@@ -50,6 +50,24 @@
 ;将列表的第一个元素移到列表第二个元素右边，再引入参数（cdr lst）到reverse函数中。
 ;递归的重要思想就是先找到第一步的过程，尔后第二、第三乃至第n步直接调用递归函数
 
+; version 2
+(define (pick_right lst); 取最右边的元素
+  (cond
+    ((null? (cdr lst)) (car lst)); 其结束条件为此列表递归至只剩一个元素在列表中
+    (else (pick_right (cdr lst)))))
+(define (delete_right lst); 删除最右边的元素后返回列表
+  (cond 
+    ((null? (cdr lst)) '()); 此结束条件做到了删除最右边的元素
+    (else (cons (car lst) (delete_right (cdr lst))))))
+(delete_right '(1 2 3))
+(define (reverse lst)
+  (cond
+    ((null? (cdr lst)) (car lst))
+    (else (cons (pick_right lst) (reverse (delete_right lst))))))
+(reverse '(b 2 3 a 5))
+; 上面代码的思想是将列表的最后一个程序移到列表的第一个元素之前，并且删掉最后一个元素，这里
+; 用到两个辅助函数delete_right和pick_right，但是version 2的版本有些问题如下例子，
+; (reverse '(b 2 3 a 5)) #(5 a 3 2 . b)这种情况
 
 ;(reverse '(1 2 3) #(3 2 1)
 ;(reverse '(2 1 3) #(3 1 2)
@@ -63,16 +81,16 @@
     (and (not (pair? x)) (not (null? x)))))
 
 
-(define (pick_list_reverse lst) ;设计一个函数将一个列表里的子元素列表内部全部先反转
+        
+(define (reverse_nested lst) 
   (cond
-   ((null? lst) '())
-   ((list? (car lst)) (cons (insertR (car (car lst)) (car (cdr (car lst))) (reverse (cdr (car lst)))) (cdr lst))) ;(insertR (car (car lst)) (car (cdr (car lst))) (reverse (cdr (car lst))))这行代码是解决lst列表遇到元素是列表时也要反转的情况
-  (else  (cons (car lst) (pick_list_reverse (cdr lst))))))        
-(define (reverse_nested lst)
-  (cond
-    ((null? (cdr lst))  lst);这是reverse_nested函数的终止条件,可以解决下一行注释的问题
-    ((atom? (car lst)) (insertR (car lst) (car (cdr lst)) (reverse_nested (cdr lst)))); (car (cdr lst))表达式会有一个问题,当lst为'(d)情况时,程序报错,因为car的参数不能为空列表
-    (else (reverse (pick_list_reverse lst)))));本意是希望先将一个列表里的子元素列表内部全部先反转,再调用reverse反转整个lst,但没成功，这个想法其实不对，
+     ((list? (pick_right lst)) (cons (reverse (pick_right lst))  (reverse_nested (delete_right lst)))); 当lst最后一个元素为列表时，先进行列表元素的翻转
+     ((null? (cdr lst)); 结束条件的(car lst)有元素和列表两种可能性
+      (cond
+        ((atom? (car lst)) (car lst))
+        (reverse (car lst))))
+    (else (cons (pick_right lst) (reverse_nested (delete_right lst)))))); 当lst最后一个元素为原子时
+   
 
 
 ;(reverse_nested: '(1 2 3) #(3 2 1)
