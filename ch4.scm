@@ -106,3 +106,85 @@
 (power 2 3)
 
 ; p75
+(define (division n m); 这里答案跟计算的正确值不一样
+  (cond
+    ((< n m) 0); 此时n小于m，商为0
+    (else (add1 (division (- n m) m)))))
+(division 6 3); 答案是0
+(division 3 9); 答案是1
+
+; p76
+(define (length lat); 求lat列表的元素个数
+  (cond
+    ((null? lat) 0)
+    (else (add1 (length (cdr lat))))))
+(length '(a b c d e))
+
+(define (pick n lat); 找寻列表lat的第n个元素
+  (cond
+    ((zero? (sub1 n)) (car lat)); 结束递归的终止条件
+    (else (pick (sub1 n )  (cdr lat)))))
+(pick 3 '(a b c d e))
+
+; p77
+(define (rempick n lat); 移除列表lat的第n个元素尔后得出一个列表
+  (cond
+    ((zero? (sub1 n)) (cdr lat))
+    (else (cons (car lat) (rempick (sub1 n) (cdr lat))))));因为只是移除列表lat的第n个元素，记得将第n 个元素前的元素都要加上去
+(rempick 3 '(a b c d e f))
+
+(define (no_nums lat); 移除列表lat里的所有数字元素
+  (cond
+    ((null? lat) '())
+    ((number? (car lat)) (no_nums (cdr lat))); 判断元素是否为数字
+    (else (cons (car lat) (no_nums (cdr lat)))))); 记得把移除的数字元素之前的元素加上
+(no_nums '(apple 2 3 red sweet 4))
+
+; p78
+(define (all_nums lat); 将一个列表lat里的数字元素提取出来，构成一个tup列表
+  (cond
+    ((null? lat) '())
+    ((number? (car lat)) (cons (car lat) (all_nums (cdr lat)))); 这是提取出全部数字元素的新列表
+    (else (all_nums (cdr lat)))))
+(all_nums '(apple 2 3 red sweet 4))
+
+(define (eqan? a1 a2); 判断a1与a2是否相等
+  (cond
+   ((and (number? a1) (number? a2)) (= a1 a2)); 先判断a1跟a2是否都为数字才能用=判断，否则程序会报错
+   ((or (number? a1) (number? a2)) #f); 此处情况是a1跟a2的字符类型不同无法判断所以返回#f
+   (else (eq? a1 a2))))
+(eqan? 'a 0)
+#; (define (eqan? a1 a2); 判断a1与a2是否相等
+  (cond
+   ((and (number? a1) (number? a2)) (= a1 a2)); 先判断a1跟a2是否都为数字才能用=判断,否则程序会报错
+   (else (eq? a1 a2)))); 包含了两种情况（1）a1、a2为非数字元素；（2）a1或a2其中一个为数字元素，另一个为非数字元素
+;上列程序是eqan？函数的化简
+
+(define (occur a lat); 统计a元素在列表lat当中出现的次数
+  (cond
+    ((null? lat) 0)
+    ((eq? a (car lat)) (add1 (occur a (cdr lat)))); 当a元素出现一次就加一计数
+    (else (occur a (cdr lat)))))
+(occur 'c '(a b c d c e c))
+
+; p79
+(define (one? n) ; 判断n是否为1
+  (cond
+    ((zero? n) #f)
+    (else (zero? (sub1 n)))))
+(one? 3)
+
+#;
+(define (one? n) ; 判断n是否为1
+  (cond
+    (else (zero? (sub1 n)))))
+#;
+(define (one? n);这是one函数的简化
+  (= n 1))
+(one? 3)
+
+(define (rempicks n lat); 移除列表lat的第n个元素尔后得出一个列表,这是rempick的另一部分写法
+  (cond
+    ((one? n) (cdr lat))
+    (else (cons (car lat) (rempicks (sub1 n) (cdr lat))))));因为只是移除列表lat的第n个元素,记得将第n 个元素前的元素都要加上去
+(rempicks '3 '(a c d w d))
