@@ -41,14 +41,13 @@
 ;reverse: 接受一个带有n个元素的列表,反转里面的元素
 
 
-#;
-; version 1
-(define (reverse lst)
+#;(define (reverse lst)
   (cond
-    ((null? (cdr lst))  lst);这是reverse函数的终止条件，可以解决下一行注释问题
-    (else (insertR (car lst) (car (cdr lst)) (reverse (cdr lst)))))); (car (cdr lat))表达式会有一个问题，当lst为'（d）情况时，程序报错，因为car的参数不能为空列表
-;将列表的第一个元素移到列表第二个元素右边，再引入参数（cdr lst）到reverse函数中。
-;递归的重要思想就是先找到第一步的过程，尔后第二、第三乃至第n步直接调用递归函数
+    ((null? (cdr lst))  lst);这是reverse函数的终止条件,可以解决下一行注释问题
+    (else (insertR (car lst) (car (cdr lst)) (reverse (cdr lst)))))); (car (cdr lat))表达式会有一个问题,当lst为'(d)情况时,程序报错,因为car的参数不能为空列表
+;将列表的第一个元素移到列表第二个元素右边,再引入参数(cdr lst)到reverse函数中。
+;递归的重要思想就是先找到第一步的过程,尔后第二、第三乃至第n步直接调用递归函数
+
 
 ; version 2
 (define (pick_right lst); 取最右边的元素
@@ -62,12 +61,12 @@
 (delete_right '(1 2 3))
 (define (reverse lst)
   (cond
-    ((null? (cdr lst)) (car lst))
+    ((null? (cdr lst)) lst) 
     (else (cons (pick_right lst) (reverse (delete_right lst))))))
 (reverse '(b 2 3 a 5))
 ; 上面代码的思想是将列表的最后一个程序移到列表的第一个元素之前，并且删掉最后一个元素，这里
 ; 用到两个辅助函数delete_right和pick_right，但是version 2的版本有些问题如下例子，
-; (reverse '(b 2 3 a 5)) #(5 a 3 2 . b)这种情况
+
 
 ;(reverse '(1 2 3) #(3 2 1)
 ;(reverse '(2 1 3) #(3 1 2)
@@ -84,12 +83,14 @@
         
 (define (reverse_nested lst) 
   (cond
-     ((list? (pick_right lst)) (cons (reverse (pick_right lst))  (reverse_nested (delete_right lst)))); 当lst最后一个元素为列表时，先进行列表元素的翻转
-     ((null? (cdr lst)); 结束条件的(car lst)有元素和列表两种可能性
-      (cond
-        ((atom? (car lst)) (car lst))
-        (reverse (car lst))))
-    (else (cons (pick_right lst) (reverse_nested (delete_right lst)))))); 当lst最后一个元素为原子时
+     ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst)))); 当lst最后一个元素为列表时,先进行列表元素的翻转
+     ((null? (cdr lst)) 
+       (cond 
+        ((atom? (pick_right lst)) lst)
+        (else (reverse_nested lst)))); 结束条件的(car lst)有原子和列表两种可能性
+    (else (cons (pick_right lst) (reverse_nested (delete_right lst)))))); 此时是pick_right为原子的情况
+  (reverse_nested '(1 2 3 (A B C (B D (A B) A)) A A D))
+
    
 
 
