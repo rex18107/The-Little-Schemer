@@ -40,7 +40,7 @@
 
 ;reverse: 接受一个带有n个元素的列表,反转里面的元素
 
-
+;version 1
 #;(define (reverse lst)
   (cond
     ((null? (cdr lst))  lst);这是reverse函数的终止条件,可以解决下一行注释问题
@@ -65,7 +65,7 @@
     (else (cons (pick_right lst) (reverse (delete_right lst))))))
 (reverse '(b 2 3 a 5))
 ; 上面代码的思想是将列表的最后一个程序移到列表的第一个元素之前，并且删掉最后一个元素，这里
-; 用到两个辅助函数delete_right和pick_right，但是version 2的版本有些问题如下例子，
+; 用到两个辅助函数delete_right和pick_right
 
 
 ;(reverse '(1 2 3) #(3 2 1)
@@ -80,8 +80,14 @@
     (and (not (pair? x)) (not (null? x)))))
 
 
-        
-(define (reverse_nested lst) 
+;翻转列表(包括列表中的嵌套子列表)
+(define (reverse_nested lst); 奈修改版本
+  (cond
+    ((atom? lst) lst) ; 关于原子条件的询问，按照我原来的思维认为只能是针对于列表中的最右一个元素进行询问，
+    ;所以不能理解为什么语句((atom? (pick_right lst)) lst)不正确，因为这里忽略了一个问题，lst是可以为原子的
+    ((null? lst) lst)
+    (else (cons (reverse_nested (pick_right lst)) (reverse_nested (delete_right lst))))))
+#; (define (reverse_nested lst) ; 未修改前的错误函数
   (cond
      ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst)))); 当lst最后一个元素为列表时,先进行列表元素的翻转
      ((null? (cdr lst)) 
@@ -90,6 +96,14 @@
         (else (reverse_nested lst)))); 结束条件的(car lst)有原子和列表两种可能性
     (else (cons (pick_right lst) (reverse_nested (delete_right lst)))))); 此时是pick_right为原子的情况
   (reverse_nested '(1 2 3 (A B C (B D (A B) A)) A A D))
+     ; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
+     ; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，也不会出现遇到lst为（（AB））时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
+(reverse_nested '(1 2 3)) ;(3 2 1)
+(reverse_nested '(1 2 3 (4 5))) ;((5 4) 3 2 1)
+(reverse_nested '(a (b c d) e)) ;(e (d c b) a)
+(reverse_nested '((A C)))
+(reverse_nested '((A C (A B))))
+(reverse_nested '((A D D (A B 1 2 3))))
 
    
 

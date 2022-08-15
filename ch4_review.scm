@@ -1,27 +1,48 @@
 #lang scheme
 
 ;完成以下函数
-
+(define (sub1 n); sub1函数是指在参数的值上减一
+  (- n 1))
 
 ;<<:  二进制位运算左移,如输入列表(0 0 1 1) 左移 1 次以后就是(0 1 1 0) 左移 3 次是(1 0 0 0)
 
-#;
-(define (<< lst)
-  _________
-  )
-
+(define rember   ; rember函数是移除列表lst中的a元素
+     (lambda (a lat)
+      (cond
+       ((null? lat) '())
+       ((eq? a (car lat)) (cdr lat))
+      (else
+       (rember a (cdr lat))))))
+(define (add_0_to_right lst)  ; 在列表lst的最右边一个元素后加上0
+  (cond
+    ((null? lst) (cons 0 lst)); 找到列表最右边的元素加0，这是结束递归的条件
+    (else (cons (car lst) (add_0_to_right (cdr lst))))))
+   (add_0_to_right '(1 0 1 1))
+(define (<< lst n)
+  (cond
+    ((zero? n) lst)
+    (else  (<< (rember (car lst) (add_0_to_right lst)) (sub1 n)))))   ; 调用了两个函数进行嵌套递归
+(<< '(1 0 1 1) 1)
+(<< '(0 0 1 1) 1)
+(<< '(0 0 1 1) 2)
 
 ;(<< '(1 0 1 1) 1) #(0 1 1 0)
-;(<< '(0 0 1 1) 1) #(1 1 0 0)
+;(<< '(0 0 1 1) 2) #(1 1 0 0)
 
-;&:  二进制位运算与操作,输入两个列表，返回一个新列表，只有A和B列表中都为1的位才会才新列表中是1否则是0
+;&:  二进制位运算与操作,输入两个列表，返回一个新列表，只有A和B列表中都为1的位才会出现在新列表中显示1否则是0
 
-#;
+(define (one? n) ; 判断n是否为1
+  (cond
+    (else (zero? (sub1 n)))))
+
 (define (& lst1 lst2)
-  _________
-  )
-
-;(& '(1 0 1 1 0 0 0 1) '(0 0 1 1 0 1 0 1)) #(0 0 1 1 0 0 0 1)
+  (cond
+    ((null? (car lst1)) (cons 0 (& (cdr lst1) (cdr lst2))))
+    ((null? (car lst1)) (cons 0 (& (cdr lst1) (cdr lst2))))
+    (else (and (one? (car lst1))  (one? (car lst2))) (cons 1 (& (cdr lst1) (cdr lst2))))))
+ 
+  
+(& '(1 0 1 1 0 0 0 1) '(0 0 1 1 0 1 0 1)) ;#(0 0 1 1 0 0 0 1)
 
 
 
