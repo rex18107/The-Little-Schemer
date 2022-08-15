@@ -30,20 +30,25 @@
 ;(<< '(0 0 1 1) 2) #(1 1 0 0)
 
 ;&:  二进制位运算与操作,输入两个列表，返回一个新列表，只有A和B列表中都为1的位才会出现在新列表中显示1否则是0
-
+ 
 (define (one? n) ; 判断n是否为1
   (cond
     (else (zero? (sub1 n)))))
-
+(define (multisubst new old lat)
+  (cond
+    ((null? lat) '())
+    ((eq? old (car lat)) (cons new (multisubst new old (cdr lat))))
+    (else (cons (car lat) (multisubst new old (cdr lat))))))
 (define (& lst1 lst2)
   (cond
-    ((null? (car lst1)) (cons 0 (& (cdr lst1) (cdr lst2))))
-    ((null? (car lst1)) (cons 0 (& (cdr lst1) (cdr lst2))))
-    (else (and (one? (car lst1))  (one? (car lst2))) (cons 1 (& (cdr lst1) (cdr lst2))))))
+    ((null? lst1) (multisubst 0 1 lst2)); 当lst1的长度比lst2短，用0来替换lst2多于lst1的其它元素
+    ((null? lst2) (multisubst 0 1 lst1))
+    ((and (one? (car lst1))  (one? (car lst2))) (cons 1 (& (cdr lst1) (cdr lst2))))
+    (else (cons 0 (& (cdr lst1) (cdr lst2))))))
  
   
 (& '(1 0 1 1 0 0 0 1) '(0 0 1 1 0 1 0 1)) ;#(0 0 1 1 0 0 0 1)
-
+(& '(1 0 1) '(0 1 1 1 1))
 
 
 ;binary to decimal: 将二进制列表转为整数，如(0 0) 就是 0， (0 1) 就是1 (1 1)就是2
@@ -51,18 +56,17 @@
 ;利用前面写的位运算来判断某一位比特是否是1
 #;
 (define (binary_to_decimal lst)
-  _________
-  )
+  (cond
+    
+
 
 ;(binary_to_decimal '(1 0 1 1)) #11
 ;(binary_to_decimal '(0 0 1 1)) #3
 
 ;binary addition： 得到一个二进制列表，返回这个二进制列表 + 1的数 如(0 0 1) 返回 (0 1 0), (1 0 1 1) 返回 (1 1 0 0)
 #;
-(define (binary_addition lst)
-  _________
-  )
-
+(define (binary_addition lst))
+ 
 ;(binary_addition '(1 0 1 1)) # (1 1 0 0)
 ;(binary_addition '(0 0 1 1)) # (1 0 0)
 ;(binary_addition '(1 1 1 1)) # (1 0 0 0 0)
