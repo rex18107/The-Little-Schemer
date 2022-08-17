@@ -6,6 +6,7 @@
 
 ;<<:  二进制位运算左移,如输入列表(0 0 1 1) 左移 1 次以后就是(0 1 1 0) 左移 3 次是(1 0 0 0)
 
+#;
 (define rember   ; rember函数是移除列表lst中的a元素
      (lambda (a lat)
       (cond
@@ -18,11 +19,22 @@
     ((null? lst) (cons 0 lst)); 找到列表最右边的元素加0，这是结束递归的条件
     (else (cons (car lst)
                 (add_0_to_right (cdr lst))))))
-   (add_0_to_right '(1 0 1 1))
+;(add_0_to_right '(1 0 1 1))
+
+;version 1
+#; 
 (define (<< lst n)
   (cond
     ((zero? n) lst)
     (else  (<< (rember (car lst) (add_0_to_right lst)) (sub1 n)))))   ; 调用了两个函数进行嵌套递归
+
+;version 2
+(define (<< lst n)
+  (cond
+   ((zero? n) lst);当n为0时，表示位不需要左移
+   (else (add_0_to_right (<< (cdr lst) (sub1 n))))))
+; car lst会因为左移而移除，所以直接使用cdr lst作为<<函数的参数列表，那因为递归以及car lst的被移除，n也要进行递减
+  
 (<< '(1 0 1 1) 1)
 (<< '(0 0 1 1) 1)
 (<< '(0 0 1 1) 2)
@@ -32,9 +44,10 @@
 
 ;&:  二进制位运算与操作,输入两个列表，返回一个新列表，只有A和B列表中都为1的位才会出现在新列表中显示1否则是0
  
-(define (one? n) ; 判断n是否为1
-  (cond
-    (else (zero? (sub1 n)))))
+
+(define (one? n); 判断n是否为1
+  (= n 1))
+
 (define (multisubst new old lat)
   (cond
     ((null? lat) '())
@@ -81,8 +94,9 @@
    ((zero? n) 1)
    (else (* 2 (power_of_2 (sub1 n))))))
 (power_of_2 4)
-  
 
+; version 1
+#; 
 (define (binary_to_decimal lst) 
   (cond
     ((null? lst) 0)
@@ -91,6 +105,10 @@
     (else (one? (car lst))
           (+ (power_of_2 (sub1 (length lst))); 长度是在length的基础上减一
              (binary_to_decimal (cdr lst)))))); 当元素为1时，加(power_of_2 (length lst))到递归中，使用length就可以知道元素处于列表的第几位了
+; version 2
+#;
+(define (binary_to_decimal lst)
+)
 
 (binary_to_decimal '(1 0 1 1)) 
 (binary_to_decimal '(0 0 1 1)) 
@@ -101,17 +119,22 @@
     ((null? lat) '())
     ((eq? old (car lat)) (cons new (cdr lat)))
     (else (cons (car lat) (subst new old (cdr lat))))))
-(define (binary_addition lst); 这题的思路是找规律
+(define (all_are_one lst); (all_are_one lst)函数的参数为列表,其判断一个二进制列表里的元素是否皆为1
   (cond
+    ((zero? (car lst)) #f)
+    ((and (one? (car lst)) (null? (cdr lst))) #t);递归结束条件
+    (else (all_are_one (cdr lst)))))
+(define (binary_addition lst); 这题的思路是找规律
+  (cond  
     ((zero? (pick_right lst))
      (add_1_to_right (delete_right lst)))
-    (else
+    (else 
      ((one? (pick_right lst))
       (cond
-       ((zero? (pick_right (delete_right lst)))
-        (add_0_to_right ((subst 1 (pick_right (delete_right lst)) (delete_right lst)))))
-       ((one? (pick_right (delete_right lst)))
-        (add_0_to_right (binary_addition (delete_right lst)))))))))
+       ((zero? (pick_right (delete_right lst))) 
+        (add_0_to_right  (add_1_to_right (delete_right (delete_right lst)))))
+       (else ((one? (pick_right (delete_right lst)))
+        (add_0_to_right (binary_addition (delete_right lst))))))))))
     
     
     

@@ -179,7 +179,7 @@
   (cond
     (else (zero? (sub1 n)))))
 #;
-(define (one? n);这是one函数的简化
+(define (one? n); 这是one函数的简化
   (= n 1))
 (one? 3)
 
@@ -188,3 +188,4 @@
     ((one? n) (cdr lat))
     (else (cons (car lat) (rempicks (sub1 n) (cdr lat))))));因为只是移除列表lat的第n个元素,记得将第n 个元素前的元素都要加上去
 (rempicks '3 '(a c d w d))
+
