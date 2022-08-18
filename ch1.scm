@@ -79,5 +79,3 @@
 
 ;p13
 (let ((l '(beans beans we need jelly beans))) (eq? (car l) (car (cdr l))))
-
-

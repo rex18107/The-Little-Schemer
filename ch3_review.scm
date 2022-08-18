@@ -122,4 +122,3 @@
 (cond ((eq? n 1) '(100))
       (else (insertR (* n 100) (* (- n 1) 100) (build_list (- n 1))))
   ))
-
