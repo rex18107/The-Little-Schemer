@@ -100,7 +100,7 @@
      ; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，
      ;因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
      ; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，
-     ;也不会出现遇到lst为（（AB））时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
+也不会出现遇到lst为（（AB））时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
 (reverse_nested '(1 2 3)) ;(3 2 1)
 (reverse_nested '(1 2 3 (4 5))) ;((5 4) 3 2 1)
 (reverse_nested '(a (b c d) e)) ;(e (d c b) a)
