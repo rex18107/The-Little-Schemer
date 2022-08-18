@@ -89,15 +89,18 @@
     (else (cons (reverse_nested (pick_right lst)) (reverse_nested (delete_right lst))))))
 #; (define (reverse_nested lst) ; 未修改前的错误函数
   (cond
-     ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst)))); 当lst最后一个元素为列表时,先进行列表元素的翻转
+     ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst))))
+     ; 当lst最后一个元素为列表时,先进行列表元素的翻转
      ((null? (cdr lst)) 
        (cond 
         ((atom? (pick_right lst)) lst)
         (else (reverse_nested lst)))); 结束条件的(car lst)有原子和列表两种可能性
     (else (cons (pick_right lst) (reverse_nested (delete_right lst)))))); 此时是pick_right为原子的情况
   (reverse_nested '(1 2 3 (A B C (B D (A B) A)) A A D))
-     ; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
-     ; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，也不会出现遇到lst为（（AB））时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
+     ; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，
+     ;因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
+     ; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，
+也不会出现遇到lst为（（AB））时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
 (reverse_nested '(1 2 3)) ;(3 2 1)
 (reverse_nested '(1 2 3 (4 5))) ;((5 4) 3 2 1)
 (reverse_nested '(a (b c d) e)) ;(e (d c b) a)
