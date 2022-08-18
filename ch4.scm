@@ -89,7 +89,7 @@
 ; p74
 #;(define (= n m)
   (cond
-    ((zero? n) (zero? m)); 这段代码看不懂
+    ((zero? n) (zero? m)); 先判断(zero? n)，若结果为#t，就执行(zero? m)
     ((zero? n) #f)
     (else (= (sub1 n) (sub1 m)))))
 
