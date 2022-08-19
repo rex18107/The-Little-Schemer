@@ -163,6 +163,7 @@
   (cond
     ((zero? (pick_right lst))
      (add_1_to_right (binary_addition (delete_right lst))))
+    ; 当列表最右边元素为0时，在用1替代列表最右边元素为0
     (else (one? (pick_right lst)) (add_0_to_right (binary_addition (delete_right lst))))))            
              
     
