@@ -106,12 +106,12 @@
 (power 2 3)
 
 ; p75
-(define (division n m); 这里答案跟计算的正确值不一样
+(define (division n m); 这里答案跟计算的正确值不一样,但是在其它文件测试并无错误
   (cond
     ((< n m) 0); 此时n小于m，商为0
-    (else (add1 (division (- n m) m)))))
-(division 6 3); 答案是0
-(division 3 9); 答案是1
+    (else (+ (division (- n m) m) 1))))
+(division 6 3); 答案是2
+(division 3 9); 答案是0
 
 ; p76
 (define (length lat); 求lat列表的元素个数
