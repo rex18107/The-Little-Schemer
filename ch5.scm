@@ -93,4 +93,4 @@
     ; 当列表第一个元素为列表,对其内部调用insertL*函数,接着继续递归剩余元素
     (else (cons (insertL* new old (car lat)) (insertL* new old (cdr lat))))))
 (insertL* 'h 'a '(a (a (a b c)) c d (b (d a)) a)) ; (h a (h a (h a b c)) c d (b (d h a)) h a)
-     
+
