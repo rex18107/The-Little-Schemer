@@ -179,7 +179,7 @@
   (cond
     (else (zero? (sub1 n)))))
 #;
-(define (one? n); 这是one函数的简化
+(define (one? n); 这是one函数的简化 
   (= n 1))
 (one? 3)
 
