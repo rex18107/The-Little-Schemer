@@ -3,7 +3,7 @@
 ;完成以下函数
 
 #|
-rotate: 给你一个列表,将列表中的元素向右轮转 k 个位置,其中 k 是非负数。
+1.rotate: 给你一个列表,将列表中的元素向右轮转 k 个位置,其中 k 是非负数。
 输入: nums = (1 2 3 4 5 6 7), k = 3
 输出: (5 6 7 1 2 3 4)
 k = 3意味着所有元素都会往右边跑3格，对于已经在最右边的7，会跑到左边去，所以最右边的7跑到最左边第三格去了。 
@@ -19,16 +19,33 @@ k = 3意味着所有元素都会往右边跑3格，对于已经在最右边的7�
 第三轮翻转[3,6]的部分，得到5671234
 |#
 
-#;
-(define (rotate lst k)
-  _________
-  )
+; version1
+; 取最右边的元素
+(define (pick_right lst)
+  (cond
+    ; 其结束条件为此列表递归至只剩一个元素在列表中
+    ((null? (cdr lst)) (car lst))
+    (else (pick_right (cdr lst)))))
+; 删除最右边的元素后返回列表
+(define (delete_right lst)
+  (cond
+    ; 此结束条件做到了删除最右边的元素
+    ((null? (cdr lst)) '())
+    (else (cons (car lst) (delete_right (cdr lst))))))
+(define (rotate-v1 lst k)
+  (cond
+    ; 列表为空时，返回空列表，此为结束条件
+    ((null? lst) '())
+    ; k为0时返回原始列表
+    ((zero? k) lst)
+    ; 将列表最右边元素加到删掉最右边元素的列表中形成一个新列表，并以其作为参数调用rotate函数递归
+    (else (rotate-v1 (cons (pick_right lst) (delete_right lst)) (- k 1)))))
 
-;(rotate '(1 2 3 4 5 6 7) 3) ;(5 6 7 1 2 3 4)
-;(rotate '(0 0 1 1) 1);(1 0 0 1)
+(rotate-v1 '(1 2 3 4 5 6 7) 3) ;(5 6 7 1 2 3 4)
+(rotate-v1 '(0 0 1 1) 1);(1 0 0 1)
 
 #|
-subsets: 给你一个整数列表 nums ,列表中的元素 互不相同 。返回该列表所有可能的子集(幂集)。
+2. subsets: 给你一个整数列表 nums ,列表中的元素 互不相同 。返回该列表所有可能的子集(幂集)。
 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
 
 输入:nums = (1 2 3)
