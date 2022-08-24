@@ -58,7 +58,19 @@ k = 3意味着所有元素都会往右边跑3格，对于已经在最右边的7�
 第三轮是(0 1 0),1代表我们取第二位,产生(2)
 第三轮是(0 1 1),1代表我们取第二位和第三位,产生(2 3) 以此类推就可以解决问题。
 |#
-
+; 求lat列表的元素个数
+(define (length lat)
+  (cond
+    ((null? lat) 0)
+    (else (add1 (length (cdr lat))))))
+; 给出列表长度,得到对应的全是k元素的列表,如给n=2,k=1 ,得到(1 1)
+(define (make-0&1-list n k)
+    (cond
+      ((zero? n) '()) 
+      (else (cons k (make-0&1-list (- n 1) k))))) 
+(make-0&1-list 2 0)
+(make-0&1-list 4 1)
+; 二进制加1后所得的列表
 (define (binary-add lst)
   (cond
     ;如果列表穷尽了,算法还是没结束,就说明没找到0,全部都是1。我们给列表加个1到尾部(翻转以后是头部)
@@ -68,51 +80,38 @@ k = 3意味着所有元素都会往右边跑3格，对于已经在最右边的7�
     ;不是0的一律设为0(直到我们撞到0或者列表跑完了)
     (else
      (cons 0 (binary-add (cdr lst))))))
-; 求lat列表的元素个数
-(define (length lat)
+; 给出列表(0 0 ... 0),得到从(0 0 ... 0)加到(1 1 ... 1)的每个二进制列表
+(define (get-subsets lst)
   (cond
-    ((null? lat) 0)
-    (else (add1 (length (cdr lat))))))
-; 假设给出长度3,求得到((0 0 0)(1 1 1)),只是这里的长度为k
-(define (all-0&1 k0 k1 n lst0 lst1) 
-  (cond
-    ; 表示此时已经列完有k个元素的(0 0 ... 0)和(1 1 ... 1)
-    ((or (zero? k0) (zero? k1))'())
-    ; 列完有k个元素的(0 0 ... 0),(1 1 ... 1)将其整合为((0 0 ... 0) (1 1 ... 1))输出
-    ((and (= (length lst0) n)
-          (= (length lst1) n))
-     (cons lst0 (cons lst1 '())))
-    ; 只要k0还大于0,持续递归调用将0加至lst0
-    ((> k0 0) (cons 0 (all-0&1 (- k0 1) k1 n lst0 lst1)))
-    ; 只要k1还大于1,持续递归调用将1加至lst1
-    (else (> k1 0) (cons 1 (all-0&1  k0 (- k1 1) n lst0 lst1)))))
-; 输出列表中有几个a元素
-(define (count lst a)
-  (cond
-    ((null? lst) 0)
-    ((= (car lst) a) (+ (count(cdr lst)) 1))
-    (else (count (cdr lst) a))))
-; 给出列表形式为k个0元素的列表,将其所有子集列出来,lst的形式为(0 0 ... 0),lsts为'()
-(define (list-binaryadd lst lsts k)
-  (cond
-    ((zero? k) lsts)
-    ((> k 0) (cons (binary-add lst)
-                   (list-binaryadd (binary-add lst) lsts (- k 1))))
-; 找出二进制列表里为1位置所对应的另一个列表元素
+    ; 如果lst加1后的元素长度大于其原本的长度就返回空列表
+    ((> (length (binary-add lst))
+        (length lst))
+     (cons lst '()))
+    (else (cons lst (get-subsets (binary-add lst))))))
+(get-subsets '(0 0 0 0))
+; 提取二进制列表lst1中的1元素对应lst2位置的元素，构成新列表
 (define (corresponding-element lst1 lst2)
   (cond
     ((null? lst1) '())
-    ((= (car lst1) 1) (cons (car lst2) (corresponding-element (cdr lst1) (cdr lst2))))
+    ((= (car lst1) 1)
+     (cons (car lst2) (corresponding-element (cdr lst1) (cdr lst2))))
     (else (corresponding-element (cdr lst1) (cdr lst2)))))
-
-; k作为lst的长度
-(define (subsets lst k)
-  (cond            
-    ((zero? (- k 1)) lst)))
+; lst列表中的元素为二进制列表，将这个列表中的所有元素都用corresponding-element转换，构成新列表
+(define (switch-to-subsets lst lsto)
+  (cond
+    ; 当列表只剩一个元素时，直接转换此列表加在空列表中
+    ((null? (cdr lst)) (cons (corresponding-element (car lst) lsto) '()))
+    (else (cons
+           (corresponding-element (car lst) lsto)
+           (switch-to-subsets (cdr lst) lsto)))))
+(switch-to-subsets '((0 1 0 1)) '(2 3 4 5))
+; 给出一个整数列表的所有子集
+(define (subsets lst)
+  (switch-to-subsets (get-subsets (make-0&1-list (length lst) 0)) lst))
   
     
        
-;(subsets '(1 2 3) ;(() (1) (2) (1 2) (3) (1 3) (2 3) (1 2 3))
+(subsets '(1 2 3)) ;(() (1) (2) (1 2) (3) (1 3) (2 3) (1 2 3))
 
 #|
 3.count_islands: 给你一个由 '1'(陆地)和 '0'(水)组成的的二维网格,请你计算网格中岛屿的数量。
