@@ -32,7 +32,7 @@
      (and (numbered? (car aexp))
           (numbered? (car (cdr (cdr aexp))))))))
 (numbered-s? '(1 2 2))
-; 求幂
+; 求n的m次幂
 (define (^ n m)
   (cond
     ((zero? m) 1)
