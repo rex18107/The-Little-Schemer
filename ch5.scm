@@ -173,8 +173,7 @@
     ; 这里调用了equal？函数来判断参数可能为原子可能为列表的情况
     (else (equal? (car l1) (car l2))
           (eqlist? (cdr l1) (cdr l2)))))
-(equalist-v3 '((1 2) 3 (4 5 (6))) '((1 2) 3 (4 5 (6))))
-
+(equalist-v3 '((1 2) 3 (4 5 (6))) '((1 2 3 (4 5 (6)))))
 ; p94
 ; 移除表达式列表l当中的表达式s（s可为列表or原子）
 (define (rember s l)
