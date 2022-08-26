@@ -42,7 +42,9 @@
 ; 求出算术表达式
 (define (value nexp)
   (cond
+    ; 先判断表达式是不是原子,是的话返回原子作为算术表达式
     ((atom? nexp) nexp)
+    ; 判断
     ((eq? (car (cdr nexp)) '+)
      (+ (value (car nexp))
         (value (car (cdr (cdr nexp))))))
