@@ -9,8 +9,8 @@
        ((null? lat) '())
        ; 判断列表的第一个元素是否等于a，是的话就返回（cdr lat）
        ((eq? a (car lat)) (cdr lat))
-      (else
-       (rember a (cdr lat))))))
+       (else
+        (rember a (cdr lat))))))
 
 ; p37
 ; 此为修改后的rember函数
@@ -19,9 +19,9 @@
      (cond
        ((null? lat) '())
        ((eq? a (car lat)) (cdr lat))
-     (else
-       ; 列表的第一个元素不等于a,加上第一个元素对列表其余元素继续进行递归调用
-       (cons (car lat) (rember a (cdr lat)))))))
+       (else
+         ; 列表的第一个元素不等于a,加上第一个元素对列表其余元素继续进行递归调用
+         (cons (car lat) (rember a (cdr lat)))))))
 
 ; p33
 (let ((a 'toast) (lat '(bacon lettuce and tomato))) (rember a lat))
@@ -114,7 +114,7 @@
     ((eq? old (car lat)) (cons new (cons old(multiinsertL new old (cdr lat)))))
     (else (cons (car lat) (multiinsertL new old (cdr lat))))))
 (multiinsertL 'hi 'hello '(hello you I he hello));test
-;subst函数是用new元素替换掉列表lat中的每一个old元素,构成一个新列表
+; multisubst函数是用new元素替换掉列表lat中的每一个old元素,构成一个新列表
 (define (multisubst new old lat)
   (cond
     ((null? lat) '())

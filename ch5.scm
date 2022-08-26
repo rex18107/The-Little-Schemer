@@ -17,7 +17,7 @@
        (else (cons (car l) (rember* a (cdr l))))))
        ; 当(car l)不为a时,要记得将(car l)加到递归函数前面
        ; 此时(car l)是列表,直接将已处理好的函数加到(rember* a (cdr l)),表示进行递归
-       (else (cons (rember* a (car l)) (rember* a (cdr l))))))   
+    (else (cons (rember* a (car l)) (rember* a (cdr l))))))   
 (rember* 'cup '((coffee) cup ((tea) cup) (and (hick)) cup))      
 
 ; p82
