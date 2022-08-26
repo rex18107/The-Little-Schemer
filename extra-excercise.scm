@@ -13,6 +13,7 @@
 ; 判断是否为单数
 (define (singular? n)
   (cond
+    ; 此数如果不是复数就是单数
     ((plural? n) #f)
     (else #t)))
 (singular? 3 )
