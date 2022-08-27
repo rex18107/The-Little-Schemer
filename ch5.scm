@@ -17,7 +17,8 @@
        (else (cons (car l) (rember* a (cdr l))))))
        ; 当(car l)不为a时,要记得将(car l)加到递归函数前面
        ; 此时(car l)是列表,直接将已处理好的函数加到(rember* a (cdr l)),表示进行递归
-    (else (cons (rember* a (car l)) (rember* a (cdr l))))))   
+    (else (cons (rember* a (car l)) (rember* a (cdr l))))))
+; ((coffee) ((tea)) (and (hick)))
 (rember* 'cup '((coffee) cup ((tea) cup) (and (hick)) cup))      
 
 ; p82
@@ -36,6 +37,7 @@
        (else (cons (car l) (insertR* new old (cdr l))))))    
     ; 当(car l)为列表时,先调用insertR函数构建成新列表,将构建好的新(car l)加上至继续递归除了(car l)外的剩余部分
     (else (cons (insertR* new old (car l)) (insertR* new old (cdr l))))))
+; ((how much (wood))
 (insertR* 'roast 'chuck '((how much (wood)) could ((a (wood) chuck)) (((chuck))) (if (a) ((wood chuck))) could chuck wood))
 
 ; p85
@@ -55,7 +57,8 @@
        (occur* a (cdr l))))
     ; 当列表第一个元素为列表，对其内部调用occur*函数，接着继续递归剩余元素算出有几个a
     (else (+ (occur* a (car l)) (occur* a (cdr l))))))
-(occur* 'a '(a (a (a b c)) c d (b (d a)) a)) ; 5
+; 5
+(occur* 'a '(a (a (a b c)) c d (b (d a)) a)) 
 
 ; 将列表中出现的所有old替换成new
 (define (subst* new old lat)
@@ -73,7 +76,8 @@
      ; 当列表第一个元素为列表,对其内部调用subst*函数得到一新列表，并加在递归剩余元素所得的列表前
     (else (cons (subst* new old (car lat))
                 (subst* new old (cdr lat))))))
-(subst* 'h 'a '(a (a (a b c)) c d (b (d a)) a)) ; (h (h (h b c)) c d (b (d h)) h)
+; (h (h (h b c)) c d (b (d h)) h)
+(subst* 'h 'a '(a (a (a b c)) c d (b (d a)) a))
 
 ; p86
 ; 在列表中所有出现的old左边插入new
@@ -89,7 +93,8 @@
        (else (cons (car lat) (insertL* new old (cdr lat))))))
     ; 当列表第一个元素为列表,对其内部调用insertL*函数,接着继续递归剩余元素
     (else (cons (insertL* new old (car lat)) (insertL* new old (cdr lat))))))
-(insertL* 'h 'a '(a (a (a b c)) c d (b (d a)) a)) ; (h a (h a (h a b c)) c d (b (d h a)) h a)
+; (h a (h a (h a b c)) c d (b (d h a)) h a)
+(insertL* 'h 'a '(a (a (a b c)) c d (b (d a)) a)) 
 
 ; p87
 ;判断a元素是否出现在列表l中
@@ -102,6 +107,7 @@
       (else (member* a(cdr l)))))
     (else
      (or (member* a (car l)) (member* a (cdr l))))))
+; #t
 (member* 'a '((a (a b c)) c d (b (d a)) a))
 
 ; p88
@@ -112,6 +118,7 @@
     ((atom? (car l)) (car l))
     ; 当列表最左边元素是列表时，在（car l）中调用函数递归
     (else (leftmost (car l)))))
+; most
 (leftmost '((most (cutiest child)) is (xiang)))
 
 ; p92
@@ -149,6 +156,7 @@
      ; 这里比eqlist?-v1这个版本胜在直接调用递归，简化了步骤，代码更简单
      (and (eqlist? (car l1) (car l2))
           (eqlist? (cdr l1) (cdr l2))))))
+; #f
 (eqlist? '() '(1 2))
 
 ; p92
@@ -173,7 +181,9 @@
     ; 这里调用了equal？函数来判断参数可能为原子可能为列表的情况
     (else (equal? (car l1) (car l2))
           (eqlist? (cdr l1) (cdr l2)))))
+; #f
 (equalist-v3 '((1 2) 3 (4 5 (6))) '((1 2 3 (4 5 (6)))))
+
 ; p94
 ; 移除表达式列表l当中的表达式s（s可为列表or原子）
 (define (rember s l)
@@ -183,5 +193,7 @@
     ((equal? (car l) s) (cdr l))
     ; 这里的rember函数不能移除元素为列表里与s相同的表达式
     (else (cons (car l) (rember s (cdr l))))))
+; ; (a d)
 (rember '(1 2 3) '(a d (1 2 3)))
+; (a d (a (1 2 3) b))
 (rember '(1 2 3) '(a d (a (1 2 3) b)))

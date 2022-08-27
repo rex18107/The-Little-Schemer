@@ -12,18 +12,18 @@
       (else #f))))  
 
 ; p15
-(let ((l '(Jack Sprat could eat no chicken))) (lat? l))
-(let ((l '((Jack) Sprat could eat no chicken))) (lat? l))
-(let ((l '(Jack (Sprat could) eat no chicken))) (lat? l))
-(let ((l '())) (lat? l))
+(let ((l '(Jack Sprat could eat no chicken))) (lat? l)); #t
+(let ((l '((Jack) Sprat could eat no chicken))) (lat? l)); #f
+(let ((l '(Jack (Sprat could) eat no chicken))) (lat? l)); #f
+(let ((l '())) (lat? l)); #t
 
 ; p16
-(let ((l '(bacon and eggs))) (lat? l))
+(let ((l '(bacon and eggs))) (lat? l)); #t
 
 ; p21
-(let ((l1 '()) (l2 '(d e f g))) (or (null? l1) (atom? l2)))
-(let ((l1 '(a b c)) (l2 '())) (or (null? l1) (null? l2)))
-(let ((l1 '(a b c)) (l2 '(atom))) (or (null? l1) (null? l2)))
+(let ((l1 '()) (l2 '(d e f g))) (or (null? l1) (atom? l2))); #t
+(let ((l1 '(a b c)) (l2 '())) (or (null? l1) (null? l2))); #t
+(let ((l1 '(a b c)) (l2 '(atom))) (or (null? l1) (null? l2))); #f
 
 ; p22
 #|(define member?
@@ -38,8 +38,8 @@
     (cond
       ((null? lat) #f)
       (else (or (eq? a (car lat)) (member? a (cdr lat)))))))
-(let ((a 'tea) (lat '(coffee tea or milk))) (member? a (cdr lat)))
-(let ((a 'poached) (lat '(fried eggs and scrambled eggs))) (member? a (cdr lat)))
+(let ((a 'tea) (lat '(coffee tea or milk))) (member? a (cdr lat))); #t
+(let ((a 'poached) (lat '(fried eggs and scrambled eggs))) (member? a (cdr lat))); #f
 
 ; p28
-(let ((a 'liver) (lat '(bagels and lox))) (member? a lat))
+(let ((a 'liver) (lat '(bagels and lox))) (member? a lat)); #f
