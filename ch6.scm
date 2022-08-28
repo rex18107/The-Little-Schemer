@@ -57,7 +57,7 @@
         (value (car (cdr (cdr nexp))))))
      ; 判断列表第二个元素是否为*,是的话返回第一个元素和第三个元素相乘的值
     ((eq? (car (cdr nexp)) '*)
-     (+ (value (car nexp))
+     (* (value (car nexp))
         (value (car (cdr (cdr nexp))))))
      ; 返回第一个元素的第三个元素值的次方
     (else
