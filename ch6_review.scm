@@ -105,27 +105,44 @@ a ⋅ b = 49
 ; 21
 (⋅ '(3 2 8) '(3 2 1))
 
+; 此函数可以兼容原子与列表的加法,只考虑列表中元素个数相同的情况
+(define (++ n m)
+  (cond
+    ; n,m都为原子的话直接相加
+    ((atom? n)
+     (+ n m))    
+    ((or (null? n) (null? m)) '())
+    ; n，m为列表的情况
+    (else
+     (cons
+      (+ (car n) (car m))
+      (++ (cdr n) (cdr m))))))
+; 11
+(++ 2 9)
+
+(++ '(1 2 3) '(2 3 4))
+
 (define (value-v3 nexp)
  (cond
    ((atom? nexp) nexp)
    ((eq? (operator nexp) '+)
-     (+ (value-v3 (1st-sub-exp nexp))
-      (value-v3 (2nd-sub-exp nexp))))
+    ; 这里同时兼容了原子和列表的加法
+     (++  (1st-sub-exp nexp)
+          (2nd-sub-exp nexp)))
    ((eq? (operator nexp) '*)
      (* (value-v3 (1st-sub-exp nexp))
       (value-v3 (2nd-sub-exp nexp))))
    ((eq? (operator nexp) '^)
      (^ (value-v3 (1st-sub-exp nexp))
       (value-v3 (2nd-sub-exp nexp))))
-   ; 计算nexp值为点积列表时
-   ((eq? (operator nexp) '⋅)
-     (⋅ (1st-sub-exp nexp)
-      (2nd-sub-exp nexp)))
+   ; 计算nexp值为点积列表的值
    (else
-    ((list? (car nexp))
-     (v-list (1st-sub-exp nexp)
-             (2nd-sub-exp nexp))))))
+    (eq? (operator nexp) '⋅)
+     (⋅ (1st-sub-exp nexp)
+      (2nd-sub-exp nexp)))))
 ; 8  
-(value-v3 '(3 + 5))         
+(value-v3 '(3 + 5))
+; (5 5 10 2)
+(value-v3 '((3 5 3 1) + (2 0 7 1)))
 ; 28        
 (value-v3 '((3 5 3 1) ⋅ (2 0 7 1)))
