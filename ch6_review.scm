@@ -43,8 +43,8 @@
    ; 当nexp值为列表时，调用value-list函数
    (else  (value-list nexp))))
     
-
-(value-v2 '((1 2) + (3 4))); (4 6)
+; (4 6)
+(value-v2 '((1 2) + (3 4)))
 
 #|
 value:  增加value的功能,可以支持点积。 如  a ⋅ b 当 a = (3 5 8) 且 b = (2 7 1)，那么：
@@ -59,9 +59,9 @@ a ⋅ b = 49
 (define (value-d nexp)
   (cond
     ; 使递归最后一步为（（8）⋅（1））的形式，让8*1
-    ((null? (car(car nexp)))
-     (* (value-d (car (car nexp)))
-              (value-d (car (car (cdr (cdr nexp)))))))
+    ((null? (cdr(car nexp)))
+     (*  (car (car nexp))
+            (car (car (cdr (cdr nexp))))))
     ((atom? nexp) nexp)
     ; 将两个列表的第一个元素积之后加到两个列表的第二个元素积后的值上
     (else (+ (* (car (car nexp))
@@ -74,8 +74,6 @@ a ⋅ b = 49
                                    '()))))))))
 (value-d '((3 5 8) ⋅ (2 7 1)))            
            
-
-#;
 (define (value-v3 nexp)
  (cond
    ((atom? nexp) nexp)
@@ -91,7 +89,5 @@ a ⋅ b = 49
    ; 当nexp值为点积列表时,调用value-d
    (else  (eq? (car (cdr nexp)) '⋅)
           (value-d nexp))))
-          
-
-;(value_v3 '((3 5 8) ⋅ (2 7 1))); 49
-;(value_v3 '((3 5 3 1) ⋅ (2 0 7 1))); 28
+; 28        
+(value-v3 '((3 5 3 1) ⋅ (2 0 7 1)))
