@@ -9,12 +9,21 @@
   (cond
     ((zero? m) 1)
     (else (* n (* n (- m 1))))))
+; 一个算术表达式的表示方式中的第一个子表达式
+(define (1st-sub-exp aexp)
+  (car aexp))
+; 一个算术表达式的表示方式中的第二个子表达式
+(define (2nd-sub-exp aexp)
+  (car (cdr (cdr aexp))))
+; 表达操作符所在位置
+(define (operator aexp)
+  (car (cdr aexp)))
 #|
 1.value:  增加value的功能，可以支持坐标相加，也就是支持有2个数字的列表，分别代表x y，相加以后得到(x1+x2 y1+y2)的结果。
 如(1 2) + (3 4) = (4 6)
 提示：我们需要重新定义 + 流程并且修改value的代码？
 |#
-; 求出列表的值
+; 一个参数求出列表元素相加后构成的新列表
 (define (value-list nexp)
   (cond
     ((atom? nexp) nexp)
@@ -25,24 +34,37 @@
            (cons
             (+ (value-list (car (cdr (car nexp))))
               (value-list (car(cdr (car (cdr (cdr nexp)))))))
-            '())))))      
+            '())))))
+; 两个参数求出列表元素相加后构成的新列表
+(define (v-list n m)
+  (cond
+    ((or (null? n) (null? m)) '())
+    (else
+     (cons
+      (+ (car n) (car m))
+         (v-list (cdr n) (cdr m))))))
+; (3 5)
+(v-list '(1 2) '(2 3))
+; (4 6)
 (value-list '((1 2) + (3 4)))
 
 (define (value-v2 nexp)
  (cond
    ((atom? nexp) nexp)
-   ((eq? (car nexp) '+)
-     (+ (value-v2 (car (car nexp)))
-      (value-v2 (car (cdr (cdr nexp))))))
-   ((eq? (car nexp) '*)
-     (* (value-v2 (car (car nexp)))
-      (value-v2 (car (cdr (cdr nexp))))))
-   ((eq? (car nexp) '^)
-     (^ (value-v2 (car (car nexp)))
-      (value-v2 (car (cdr (cdr nexp))))))
-   ; 当nexp值为列表时，调用value-list函数
-   (else  (value-list nexp))))
-    
+    ; 当nexp值为列表时,调用value-list函数
+   ((list? (car nexp))
+    (v-list (1st-sub-exp nexp)
+            (2nd-sub-exp nexp)))
+   ((eq? (operator nexp) '+)
+     (+ (value-v2 (1st-sub-exp nexp))
+      (value-v2 (2nd-sub-exp nexp))))
+   ((eq? (operator nexp) '*)
+     (* (value-v2 (1st-sub-exp nexp))
+      (value-v2 (2nd-sub-exp nexp))))
+   (else
+    (eq? (operator nexp) '^)
+     (^ (value-v2 (1st-sub-exp nexp))
+      (value-v2 (2nd-sub-exp nexp))))))
 ; (4 6)
 (value-v2 '((1 2) + (3 4)))
 
@@ -55,7 +77,7 @@ a ⋅ b = 6 + 35 + 8
 a ⋅ b = 49
 提示：我们需要定义一个 点积 流程并且修改value的代码？
 |#
-; 计算点积结果
+; 只用一个参数计算点积结果
 (define (value-d nexp)
   (cond
     ; 使递归最后一步为（（8）⋅（1））的形式，让8*1
@@ -72,22 +94,38 @@ a ⋅ b = 49
                                   (cons
                                    (cdr (car (cdr (cdr nexp))))
                                    '()))))))))
-(value-d '((3 5 8) ⋅ (2 7 1)))            
-           
+; 49
+(value-d '((3 5 8) ⋅ (2 7 1)))
+; 引入两个参数定义点积的算法
+(define (⋅ n m)
+  (cond
+   ((or (null? n) (null? m)) 0)
+   (else (+ (* (car n) (car m))
+      (⋅ (cdr n) (cdr m)))))) 
+; 21
+(⋅ '(3 2 8) '(3 2 1))
+
 (define (value-v3 nexp)
  (cond
    ((atom? nexp) nexp)
-   ((eq? (car nexp) '+)
-     (+ (value-v3 (car (car nexp)))
-      (value-v3 (car (cdr (cdr nexp))))))
-   ((eq? (car nexp) '*)
-     (* (value-v3 (car (car nexp)))
-      (value-v3 (car (cdr (cdr nexp))))))
-   ((eq? (car nexp) '^)
-     (^ (value-v3 (car (car nexp)))
-      (value-v3 (car (cdr (cdr nexp))))))
-   ; 当nexp值为点积列表时,调用value-d
-   (else  (eq? (car (cdr nexp)) '⋅)
-          (value-d nexp))))
+   ((eq? (operator nexp) '+)
+     (+ (value-v3 (1st-sub-exp nexp))
+      (value-v3 (2nd-sub-exp nexp))))
+   ((eq? (operator nexp) '*)
+     (* (value-v3 (1st-sub-exp nexp))
+      (value-v3 (2nd-sub-exp nexp))))
+   ((eq? (operator nexp) '^)
+     (^ (value-v3 (1st-sub-exp nexp))
+      (value-v3 (2nd-sub-exp nexp))))
+   ; 计算nexp值为点积列表时
+   ((eq? (operator nexp) '⋅)
+     (⋅ (1st-sub-exp nexp)
+      (2nd-sub-exp nexp)))
+   (else
+    ((list? (car nexp))
+     (v-list (1st-sub-exp nexp)
+             (2nd-sub-exp nexp))))))
+; 8  
+(value-v3 '(3 + 5))         
 ; 28        
 (value-v3 '((3 5 3 1) ⋅ (2 0 7 1)))
