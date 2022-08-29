@@ -76,7 +76,7 @@
 (define (2nd-sub-exp aexp)
   (car (cdr (cdr aexp))))
 
-; 将（car nexp）替换成（operator nexp）
+; 表达操作符所在位置
 (define (operator aexp)
   (car aexp))
 
