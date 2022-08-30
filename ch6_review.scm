@@ -109,40 +109,55 @@ a ⋅ b = 49
 (define (++ n m)
   (cond
     ; n,m都为原子的话直接相加
-    ((atom? n)
-     (+ n m))    
-    ((or (null? n) (null? m)) '())
-    ; n，m为列表的情况
-    (else
-     (cons
-      (+ (car n) (car m))
-      (++ (cdr n) (cdr m))))))
+    ((and (atom? n) (atom? m)) (+ n m))
+    (else (cond
+            ((or (null? n) (null? m)) '())
+            ; n，m为列表的情况
+            (else
+             (cons
+              (+ (car n) (car m))
+              (++ (cdr n) (cdr m))))))))
 ; 11
 (++ 2 9)
-
+; (3 5 7)
 (++ '(1 2 3) '(2 3 4))
 
+; 判断是否列表中只含数字,可以有列表元素。但列表元素也只含数字
+(define  (digit-only? aexp)
+  (if
+   (atom? aexp)
+   (number? aexp)
+   (and (digit-only? (car aexp))
+        (digit-only? (car (cdr aexp))))))
+; #t
+(digit-only? '(2 (1 3 (2 3)) 1))
+; #f
+(digit-only? '(1 + 2))
 (define (value-v3 nexp)
- (cond
-   ((atom? nexp) nexp)
-   ((eq? (operator nexp) '+)
-    ; 这里同时兼容了原子和列表的加法
-     (++  (1st-sub-exp nexp)
-          (2nd-sub-exp nexp)))
-   ((eq? (operator nexp) '*)
+  (cond
+    ((atom? nexp) nexp)
+     ; 可以解决调用value-v3递归后的元素中含有列表的情况
+    ((digit-only? nexp) nexp)
+    ((eq? '+ (operator nexp))
+      ; 这里同时兼容了原子和列表的加法
+     (++ (value-v3 (1st-sub-exp nexp))
+         (value-v3 (2nd-sub-exp nexp))))
+    ((eq? '* (operator nexp))
      (* (value-v3 (1st-sub-exp nexp))
-      (value-v3 (2nd-sub-exp nexp))))
-   ((eq? (operator nexp) '^)
+         (value-v3 (2nd-sub-exp nexp))))
+    ((eq? '^ (operator nexp))
      (^ (value-v3 (1st-sub-exp nexp))
-      (value-v3 (2nd-sub-exp nexp))))
-   ; 计算nexp值为点积列表的值
-   (else
-    (eq? (operator nexp) '⋅)
-     (⋅ (1st-sub-exp nexp)
-      (2nd-sub-exp nexp)))))
-; 8  
-(value-v3 '(3 + 5))
+         (value-v3 (2nd-sub-exp nexp))))
+     ; 计算nexp值为点积列表的值
+    ((eq? '⋅ (operator nexp))
+     (⋅ (value-v3 (1st-sub-exp nexp))
+         (value-v3 (2nd-sub-exp nexp))))))
+
+; 8 
+;(value-v3 '(3 * 5))
 ; (5 5 10 2)
-(value-v3 '((3 5 3 1) + (2 0 7 1)))
+;(value-v3 '((3 5 3 1) + (2 0 7 1)))
 ; 28        
 (value-v3 '((3 5 3 1) ⋅ (2 0 7 1)))
+(value-v3 '(1 + (2 + 3)))
+(value-v3 '((1 2) + ((1 1) + (1 1))))
