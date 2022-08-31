@@ -9,7 +9,6 @@
     ((= n 1) #f)
     ; 对n进行减一后递归
     (else (even? (sub1 (sub1 n))))))
-(even? 4)
 
 ; 取反
 (define (not n)
@@ -17,13 +16,14 @@
     ; 此引入参数结果如果为#t，返回#f
     ((eq? n #t) #f)
     (else #t)))
-(not-function? (even? 3))
+(not (even? 3))
 
 ; 判断是否为单数
 (define (odd? n)
     ; 调用not函数取反
-    (not (even? n))
+    (not (even? n)))
 (odd? 3 )
-
+(odd? 1001 )
+(not (odd? 10))
 ; 判断是否为质数
 ;(define ())
