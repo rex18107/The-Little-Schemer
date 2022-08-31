@@ -98,7 +98,7 @@ a ⋅ b = 49
 (value-d '((3 5 8) ⋅ (2 7 1)))
 ; 引入两个参数定义点积的算法
 (define (⋅ n m)
-  (cond
+  (cond 
    ((or (null? n) (null? m)) 0)
    (else (+ (* (car n) (car m))
       (⋅ (cdr n) (cdr m)))))) 
@@ -133,6 +133,9 @@ a ⋅ b = 49
 (digit-only? '(2 (1 3 (2 3)) 1))
 ; #f
 (digit-only? '(1 + 2))
+
+; 这里函数的参数形式为（a 运算符 b），规定了a和b的三种形式
+; 数字，只含数字的列表，
 (define (value-v3 nexp)
   (cond
     ((atom? nexp) nexp)
@@ -161,3 +164,4 @@ a ⋅ b = 49
 (value-v3 '((3 5 3 1) ⋅ (2 0 7 1)))
 (value-v3 '(1 + (2 + 3)))
 (value-v3 '((1 2) + ((1 1) + (1 1))))
+(value-v3 '((3 5 3 1) ⋅ (2 ((3 3) ⋅ (1 2)) 7 1)))
