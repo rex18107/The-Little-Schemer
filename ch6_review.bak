@@ -98,7 +98,7 @@ a ⋅ b = 49
 (value-d '((3 5 8) ⋅ (2 7 1)))
 ; 引入两个参数定义点积的算法
 (define (⋅ n m)
-  (cond
+  (cond 
    ((or (null? n) (null? m)) 0)
    (else (+ (* (car n) (car m))
       (⋅ (cdr n) (cdr m)))))) 
