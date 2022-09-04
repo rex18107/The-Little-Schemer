@@ -159,13 +159,14 @@
 (define (a-pair? x)
   (cond
     ; 排除只有一个元素
-    ; 这里感觉有点多余？ 
+    ; 这里感觉有点多余？并不会，如果x为原子的话，((null? (cdr x)) #f)
+    ; 会导致程序报错，而有了此行会返回#f
     ((atom? x) #f)
     ((null? x) #f)
     ((null? (cdr x)) #f)
     ((null? (cdr (cdr x))) #t)
     (else #f)))
-(a-pair? '(2))
+(a-pair? '3)
 
 ; p119
 ; 以下三个函数主要是用于提升代码的可读性
@@ -241,7 +242,7 @@
 ; 相当于，只能有一个x轴座标对应y轴座标，出现两个不同x对应同一个y就错误
 (define (fullfun? fun)
   (set? (seconds fun)))
-#f
+; #f
 (fullfun? '((1 a) (2 d) (3 a)))
 
 ; fullfun?的另一种实现方式
