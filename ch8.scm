@@ -47,11 +47,12 @@
 
 ; p117
 #| 这是一个函数，当传给它一个参数a时，它会返回一个函数
-   (lambda (x)
+   (lambd(a s d)a (x)
    (eq? x a))
    这里前面的a就是前面传入的参数a
    ，这叫做“Curry-ing” 柯里化|#
-#;(lambda (a)
+#;
+(lambda (a)
   (lambda (x)
     (eq? x a)))
 
@@ -91,7 +92,7 @@
      (cons new l))
     (else
      (cons (car l)
-          ((insetL-f test?) new old (cdr l))))))
+           ((insetL-f test?) new old (cdr l))))))
 ; (s d h a f)
 ((insetL-f eq?) 'h 'a '(s d a f ))
 
@@ -151,20 +152,20 @@
 (define subst
   (insert-g
    (lambda (new old l)
-     ; 为什么这不是（cons new （cdr l))
+     ; 为什么这不是(cons new (cdr l))
      (cons new  l))))
 ; (d h f)
 (subst 'h 'a '(d a f))
 
 #;(define subst
-  (lambda (new old l)
-    (cond
-      ((null? l) '())
-      ((eq? (car l) old)
-       (cons new (cdr l)))
-      (else
-       (cons (car l)
-             (subst new old (cdr l)))))))
+    (lambda (new old l)
+      (cond
+        ((null? l) '())
+        ((eq? (car l) old)
+         (cons new (cdr l)))
+        (else
+         (cons (car l)
+               (subst new old (cdr l)))))))
 (define (seqs new old l)
   (cons new l))
 ; (d h b)
@@ -216,3 +217,114 @@
 ((multirember-f eq?) 'a '(c c a q s a l))
 
 ; p137
+; 使得test？总是代表固定为等于tuna
+(define eq?-tuna
+  (eq?-c 'tuna))
+
+; 将原来的参数a合并到test中，使得test变成一个带有参数的函数
+; 再作为参数带入到multirember中
+(define (multiremberT test? l)
+  (cond
+    ((null? l) '())
+    ((test? (car l))
+     (multiremberT test? (cdr l)))
+    (else (cons (car l)
+                (multiremberT test? (cdr l))))))
+; (a s d)
+(multiremberT eq?-tuna '(tuna a s d tuna))
+
+(define (multirember&co a l col)
+  (cond
+    ((null? l)
+     (col '() '()))
+    ((eq? (car l) a)
+     ; 这里的multirember&co的第三个参数是创建了一个新的函数调用
+     ; 了col,第一个参数是newl,第二个参数是l的第一个元素和seen共
+     ; 同构成的cons列表,这一轮递归以后,col的代码逻辑被改变了
+     (multirember&co a (cdr l)
+                     (lambda (newl seen)
+                       ; 这里的调用的col是本轮未递归前的逻辑
+                       (col newl
+                            (cons (car l) seen)))))
+    (else
+     (multirember&co a (cdr l)
+                     (lambda (newl seen)
+                       (col (cons (car l) newl)
+                            seen))))))
+; p138
+; 该函数询问第二个参数是否为空列表，忽略了第一个参数
+(define (a-friend x y)
+  (null? y))
+
+; p139
+#;
+(define (new-friend-o newl seen)
+  (col newl
+       (cons (car l) seen)))
+
+; 基于(multirember&co a l col)，在这col是a-firend，(car l) 是tuna
+(define (new-friend newl seen)
+  (a-friend newl
+            (cons 'tuna seen)))
+
+; 基于(multirember&co a l col),在这col是a-firend,a 是tuna
+; 将条件判断为假的原子收集到列表newl中
+(define (latest-friend newl seen)
+  (a-friend
+   (cons 'and newl)
+   seen))
+
+; p140
+; 基于(multirember&co a l col),求出l中等于a的元素个数
+(define (last-friend x y)
+  (length x))
+
+; p141
+; 假设oldL和oldR是不同的原子，将new插入到l中的oldL左边
+; 及oldR的右边
+(define (multiinsertLR new oldL oldR l)
+  (cond
+    ((null? l) '())
+    ; 若(car l)等于oldL，将new插入到l中的oldL左边后继续递归调用
+    ((eq? (car l) oldL)
+     (cons new
+           (cons oldL
+                 (multiinsertLR new oldL oldR (cdr l)))))
+    ; 若(car l)等于oldR,将new插入到l中的oldR右边后继续递归调用
+    ((eq? (car l) oldR)
+     (cons oldR
+           (cons new
+                 (multiinsertLR new oldL oldR (cdr l)))))
+    (else
+     (cons (car l)
+           (multiinsertLR new oldL oldR (cdr l))))))
+
+; add1函数是指在参数的值上加一
+(define (add1 n)
+  ; 给出add1的定义
+  (+ n 1))
+
+; p143
+(define (multiinsertLR&co
+         new oldL oldR l col)
+  (cond
+    ((null? l)
+     (col '() 0 0))
+    ((eq? (car l) oldL)
+     (multiinsertLR&co
+      new oldL oldR (cdr l)
+      (lambda (newl L R)
+        (col (cons new (cons oldL newl))
+             (add1 L) R))))
+    ((eq? (car l) oldR)
+     (multiinsertLR&co
+      new oldL oldR (cdr l)
+      (lambda (newl L R)
+        (col (cons oldR (cons new newl))
+             L (add1 R)))))
+    (else
+     (multiinsertLR&co
+      new oldL oldR (cdr l)
+      (lambda (newl L R)
+        (col (cons (car l) newl)
+             L R))))))
