@@ -26,7 +26,7 @@
   (cond
     ; 如果n为1,代表递归结束,这是个结束条件
     ((eq? n 1) '(100))
-     ; (* n 100)这个元素为函数的开始条件,利用insertR函数将最大的数值(* n 100)往(build_list (- n 1))的最后一个元素右边插入
+    ; (* n 100)这个元素为函数的开始条件,利用insertR函数将最大的数值(* n 100)往(build_list (- n 1))的最后一个元素右边插入
     (else (insertR (* n 100) (* (- n 1) 100) (build_list (- n 1))))))
 ; (build_list 10)#(100 200 300 400 500 600 700 800 900 1000)
 ; reverse: 接受一个带有n个元素的列表,反转里面的元素
@@ -79,8 +79,8 @@
 ; 奈修改版本
 (define (reverse_nested lst)
   (cond
-     ; 关于原子条件的询问,按照我原来的思维认为只能是针对于列表中的最右一个元素进行询问,
-    ;所以不能理解为什么语句((atom? (pick_right lst)) lst)不正确,因为这里忽略了一个问题,lst是可以为原子的
+    ; 关于原子条件的询问,按照我原来的思维认为只能是针对于列表中的最右一个元素进行询问,
+    ; 所以不能理解为什么语句((atom? (pick_right lst)) lst)不正确,因为这里忽略了一个问题,lst是可以为原子的
     ((atom? lst) lst)
     ((null? lst) lst)
     (else (cons (reverse_nested (pick_right lst)) (reverse_nested (delete_right lst))))))
@@ -89,19 +89,19 @@
 (define (reverse_nested lst) 
   (cond
     ; 当lst最后一个元素为列表时,先进行列表元素的翻转
-     ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst))))      
-     ((null? (cdr lst)) 
-       (cond 
-        ((atom? (pick_right lst)) lst)
-        ; 结束条件的(car lst)有原子和列表两种可能性
-        (else (reverse_nested lst))))
-     ; 此时是pick_right为原子的情况
+    ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst))))      
+    ((null? (cdr lst)) 
+     (cond 
+       ((atom? (pick_right lst)) lst)
+       ; 结束条件的(car lst)有原子和列表两种可能性
+       (else (reverse_nested lst))))
+    ; 此时是pick_right为原子的情况
     (else (cons (pick_right lst) (reverse_nested (delete_right lst))))))
 (reverse_nested '(1 2 3 (A B C (B D (A B) A)) A A D))
-     ; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，
-     ; 因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
-     ; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，
-     ; 也不会出现遇到lst为（（AB））时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
+; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，
+; 因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
+; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，
+; 也不会出现遇到lst为((AB))时，未修改reverse_nested报错的情况，因为lst为原子的话，（cdr lst）不成立
 (reverse_nested '(1 2 3)) ;(3 2 1)
 (reverse_nested '(1 2 3 (4 5))) ;((5 4) 3 2 1)
 (reverse_nested '(a (b c d) e)) ;(e (d c b) a)
@@ -109,18 +109,16 @@
 (reverse_nested '((A C (A B))))
 (reverse_nested '((A D D (A B 1 2 3))))
 
- ;(reverse_nested: '(1 2 3) #(3 2 1)
+;(reverse_nested: '(1 2 3) #(3 2 1)
 ;(reverse_nested: '(1 2 3 (4 5)) #((5 4) 3 2 1)
 ;(reverse_nested: '(a (b c d) e) #(e (d c b) a)
 
 #;
 (define (reverse_two lst)
   ;这里没有((null? lst) '())条件,更简洁
-  (cons (car (cdr lst)) (cons (car lst) null))
-  )
+  (cons (car (cdr lst)) (cons (car lst) null)))
 
 #;
 (define (build_list n)
   (cond ((eq? n 1) '(100))
-      (else (insertR (* n 100) (* (- n 1) 100) (build_list (- n 1))))
-  ))
+        (else (insertR (* n 100) (* (- n 1) 100) (build_list (- n 1))))))
