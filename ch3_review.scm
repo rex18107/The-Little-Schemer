@@ -18,9 +18,9 @@
 ; 提示:使用insertR
 (define (insertR new old lat)
   (cond
-  ((null? lat) '())
-  ((eq? (car lat) old) (cons (car lat) (cons new (cdr lat))))
-  (else (cons (car lat) (insertR new old (cdr lat))))))
+    ((null? lat) '())
+    ((eq? (car lat) old) (cons (car lat) (cons new (cdr lat))))
+    (else (cons (car lat) (insertR new old (cdr lat))))))
 
 (define (build_list n)
   (cond
@@ -32,7 +32,8 @@
 ; reverse: 接受一个带有n个元素的列表,反转里面的元素
 
 ;version 1
-#;(define (reverse lst)
+#;
+(define (reverse lst)
   (cond
     ; 这是reverse函数的终止条件,可以解决下一行注释问题
     ((null? (cdr lst))  lst)
@@ -84,7 +85,8 @@
     ((null? lst) lst)
     (else (cons (reverse_nested (pick_right lst)) (reverse_nested (delete_right lst))))))
 ; 未修改前的错误函数
-#; (define (reverse_nested lst) 
+#;
+(define (reverse_nested lst) 
   (cond
     ; 当lst最后一个元素为列表时,先进行列表元素的翻转
      ((list? (pick_right lst)) (cons  (reverse_nested (pick_right lst))  (reverse_nested (delete_right lst))))      
@@ -95,7 +97,7 @@
         (else (reverse_nested lst))))
      ; 此时是pick_right为原子的情况
     (else (cons (pick_right lst) (reverse_nested (delete_right lst))))))
-  (reverse_nested '(1 2 3 (A B C (B D (A B) A)) A A D))
+(reverse_nested '(1 2 3 (A B C (B D (A B) A)) A A D))
      ; 原本针对于reverse_nested函数，我的设计的reverse_nested_wrong会有两个cons跟两个cond，
      ; 因为考虑到列表的最右边元素可能为原子或列表，但是奈修改的版本
      ; ((atom? lst) lst)和((null? lst) lst)可以解决这个问题，使得代码优化，
@@ -113,11 +115,12 @@
 
 #;
 (define (reverse_two lst)
-(cons (car (cdr lst)) (cons (car lst) null));这里没有((null? lst) '())条件，更简洁
+  ;这里没有((null? lst) '())条件,更简洁
+  (cons (car (cdr lst)) (cons (car lst) null))
   )
 
 #;
 (define (build_list n)
-(cond ((eq? n 1) '(100))
+  (cond ((eq? n 1) '(100))
       (else (insertR (* n 100) (* (- n 1) 100) (build_list (- n 1))))
   ))
