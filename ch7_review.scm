@@ -41,9 +41,9 @@
 ; 判断a 是否为列表l的元素
 (define (member? a l)
   (cond
-   ((null? l) #f)
-   ((eq? (car l) a) #t)
-   (else (member? a (cdr l)))))
+    ((null? l) #f)
+    ((eq? (car l) a) #t)
+    (else (member? a (cdr l)))))
 
 ; 一个算术表达式的表示方式中的第一个子表达式
 (define (1st-sub-exp aexp)
@@ -89,17 +89,17 @@
 
 ; 一个可以执行并集和交集操作的表达式运算器
 (define (eval nexp)
- (cond
-   ; 判断参数是否为原子列表
-   ((lat? nexp) nexp)
-   ; 如果参数的第二个元素是∪，就调用求并集函数
-   ((eq? (operator nexp) '∪)
-    (∪ (eval (1st-sub-exp nexp))
-       (eval (2nd-sub-exp nexp))))
-   ; 如果参数的第二个元素是∩,就调用求交集函数
-   (else (eq? (operator nexp) '∩)
-    (∩ (eval (1st-sub-exp nexp))
-       (eval (2nd-sub-exp nexp))))))
+  (cond
+    ; 判断参数是否为原子列表
+    ((lat? nexp) nexp)
+    ; 如果参数的第二个元素是∪，就调用求并集函数
+    ((eq? (operator nexp) '∪)
+     (∪ (eval (1st-sub-exp nexp))
+        (eval (2nd-sub-exp nexp))))
+    ; 如果参数的第二个元素是∩,就调用求交集函数
+    (else (eq? (operator nexp) '∩)
+          (∩ (eval (1st-sub-exp nexp))
+             (eval (2nd-sub-exp nexp))))))
 
 ; (1 4 2 3)
 (eval '((2 7 1) ∪ (1 2 4 3)))

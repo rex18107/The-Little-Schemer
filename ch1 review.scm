@@ -19,5 +19,5 @@
 ; #t
 
 ; 6.(null? (car (cons 1 null))) 是true还是false？
-;Ans：
-;#f
+; Ans：
+; #f

@@ -1,7 +1,7 @@
 
 ; 1.(member? 1 `(1,2,3)) 是t还是f？为什么？
 ; Ans：
-#t  ;忽略
+; #t  ,忽略
 
 ; (member? 1 `(123)) 是t还是f？为什么？
 ; Ans：
@@ -39,8 +39,8 @@
 ; Ans：
 (define (product_all l)
   (cond
-   ((null? l) 1)
-   (else (* (car l) (product_all (cdr l))))))
+    ((null? l) 1)
+    (else (* (car l) (product_all (cdr l))))))
 
 ; 4.实现一个函数，比较给出的列表中是否含有数字44？
 ; 输出：
@@ -55,9 +55,8 @@ Ans：
 ; 以下是奈奈的做法
 (define (find_44 list)
   (cond ((null? list) #f)
-         ((eq? (car list) 44) #t)
-        (else (find_44 (cdr list)))
-  ))
+        ((eq? (car list) 44) #t)
+        (else (find_44 (cdr list)))))
 ; 奈奈的做法更好，可以省略or这一步但是不太清楚，增加or主要是影响内存还是时间
 
 
@@ -78,5 +77,5 @@ Ans：
     ; 这个是为了避免出现当参数为A '(1 2 3 4),B '(1 2 3)时,出现报错
     ((null? B) #f)       
     (else (cond
-              ((eq? (car A) (car B)) (compare_list (cdr A) (cdr B)))
-              (else #f)))))
+            ((eq? (car A) (car B)) (compare_list (cdr A) (cdr B)))
+            (else #f)))))

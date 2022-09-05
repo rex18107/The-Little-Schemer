@@ -3,25 +3,26 @@
 ; p34
 ; rember函数是去除列表lat中的第一个a原子
 ; 此部分代码是不完整的,代码的结果很可能会缺少(car lat)及其函数递归后的(car lat)
-#; (define rember
-     (lambda (a lat)
-      (cond
-       ((null? lat) '())
-       ; 判断列表的第一个元素是否等于a，是的话就返回（cdr lat）
-       ((eq? a (car lat)) (cdr lat))
-       (else
-        (rember a (cdr lat))))))
+#;
+(define rember
+  (lambda (a lat)
+    (cond
+      ((null? lat) '())
+      ; 判断列表的第一个元素是否等于a，是的话就返回（cdr lat）
+      ((eq? a (car lat)) (cdr lat))
+      (else
+       (rember a (cdr lat))))))
 
 ; p37
 ; 此为修改后的rember函数
 (define rember
-   (lambda (a lat)
-     (cond
-       ((null? lat) '())
-       ((eq? a (car lat)) (cdr lat))
-       (else
-         ; 列表的第一个元素不等于a,加上第一个元素对列表其余元素继续进行递归调用
-         (cons (car lat) (rember a (cdr lat)))))))
+  (lambda (a lat)
+    (cond
+      ((null? lat) '())
+      ((eq? a (car lat)) (cdr lat))
+      (else
+       ; 列表的第一个元素不等于a,加上第一个元素对列表其余元素继续进行递归调用
+       (cons (car lat) (rember a (cdr lat)))))))
 
 ; p33
 (let ((a 'toast) (lat '(bacon lettuce and tomato))) (rember a lat)); (bacon lettuce and tomato)
@@ -67,8 +68,8 @@
     ((null? lat) '())
     ((eq? old (car lat)) (cons new lat))
     (else (cons (car lat) (insertL new old (cdr lat))))))
- (insertL 'a 'b '(b c d)); (a b c d)
- (insertL 'a 'b '(b c d a)); (a b c d a)
+(insertL 'a 'b '(b c d)); (a b c d)
+(insertL 'a 'b '(b c d a)); (a b c d a)
 ; subst函数是用new元素替换掉列表lat中的第一个old元素,构成一个新列表
 (define (subst new old lat)
   (cond

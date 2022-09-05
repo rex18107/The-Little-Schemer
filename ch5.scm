@@ -15,8 +15,8 @@
        ((eq? a (car l))
         (rember* a (cdr l)))
        (else (cons (car l) (rember* a (cdr l))))))
-       ; 当(car l)不为a时,要记得将(car l)加到递归函数前面
-       ; 此时(car l)是列表,直接将已处理好的函数加到(rember* a (cdr l)),表示进行递归
+    ; 当(car l)不为a时,要记得将(car l)加到递归函数前面
+    ; 此时(car l)是列表,直接将已处理好的函数加到(rember* a (cdr l)),表示进行递归
     (else (cons (rember* a (car l)) (rember* a (cdr l))))))
 ; ((coffee) ((tea)) (and (hick)))
 (rember* 'cup '((coffee) cup ((tea) cup) (and (hick)) cup))      
@@ -31,9 +31,9 @@
     ((atom? (car l))
      (cond
        ((eq? old (car l))
-         ; (car l)与old相同,返回值为先加上new到(insertR* new old (cdr l))中,再加上(car l)
+        ; (car l)与old相同,返回值为先加上new到(insertR* new old (cdr l))中,再加上(car l)
         (cons old (cons new (insertR* new old (cdr l)))))
-        ; (car l)与old不相同,继续递归除了(car l)外的剩余部分后加上(car l)
+       ; (car l)与old不相同,继续递归除了(car l)外的剩余部分后加上(car l)
        (else (cons (car l) (insertR* new old (cdr l))))))    
     ; 当(car l)为列表时,先调用insertR函数构建成新列表,将构建好的新(car l)加上至继续递归除了(car l)外的剩余部分
     (else (cons (insertR* new old (car l)) (insertR* new old (cdr l))))))
@@ -48,13 +48,13 @@
     ; 当列表第一个元素为原子，有两种情况
     ((atom? (car l))
      (+ (cond
-       ; a与(car l)相等加1
-       ((eq? (car l) a)
-       1)
-       ;a与(car l)不相等加0
-       (else (car l) 0))
-       ; 继续递归剩余元素
-       (occur* a (cdr l))))
+          ; a与(car l)相等加1
+          ((eq? (car l) a)
+           1)
+          ;a与(car l)不相等加0
+          (else (car l) 0))
+        ; 继续递归剩余元素
+        (occur* a (cdr l))))
     ; 当列表第一个元素为列表，对其内部调用occur*函数，接着继续递归剩余元素算出有几个a
     (else (+ (occur* a (car l)) (occur* a (cdr l))))))
 ; 5
@@ -73,7 +73,7 @@
              (else (car lat)))
            ; 继续递归剩余元素
            (subst* new old (cdr lat))))
-     ; 当列表第一个元素为列表,对其内部调用subst*函数得到一新列表，并加在递归剩余元素所得的列表前
+    ; 当列表第一个元素为列表,对其内部调用subst*函数得到一新列表，并加在递归剩余元素所得的列表前
     (else (cons (subst* new old (car lat))
                 (subst* new old (cdr lat))))))
 ; (h (h (h b c)) c d (b (d h)) h)
@@ -103,8 +103,8 @@
     ((null? l) '())
     ((atom? (car l))
      (cond
-      ((eq? (car l) a) #t)
-      (else (member* a(cdr l)))))
+       ((eq? (car l) a) #t)
+       (else (member* a(cdr l)))))
     (else
      (or (member* a (car l)) (member* a (cdr l))))))
 ; #t
@@ -134,7 +134,7 @@
      (cond
        ((eq? (car lst1) (car lst2))
         (eqlist?-v1 (cdr lst1) (cdr lst2)))
-        (else #f)))
+       (else #f)))
     ; 当两个列表的第一个元素都为原子时,先比较两个列表中第一个元素列表里的第一个元素
     ((and (list? (car lst1)) (list? (car lst2)))
      (cond

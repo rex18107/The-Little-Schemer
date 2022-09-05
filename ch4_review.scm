@@ -165,17 +165,18 @@
     ((zero? (car lst)) #f)
     ((and (one? (car lst)) (null? (cdr lst))) #t);递归结束条件
     (else (all_are_one (cdr lst)))))
-#;(define (binary_addition lst)
-    (cond  
-      ((zero? (pick_right lst))
-       (add_1_to_right (delete_right lst)))
-      (else 
-       ((one? (pick_right lst))
-        (cond
-          ((zero? (pick_right (delete_right lst))) 
-           (add_0_to_right  (add_1_to_right (delete_right (delete_right lst)))))
-          (else ((one? (pick_right (delete_right lst)))
-                 (add_0_to_right (binary_addition (delete_right lst))))))))))
+#;
+(define (binary_addition lst)
+  (cond  
+    ((zero? (pick_right lst))
+     (add_1_to_right (delete_right lst)))
+    (else 
+     ((one? (pick_right lst))
+      (cond
+        ((zero? (pick_right (delete_right lst))) 
+         (add_0_to_right  (add_1_to_right (delete_right (delete_right lst)))))
+        (else ((one? (pick_right (delete_right lst)))
+               (add_0_to_right (binary_addition (delete_right lst))))))))))
 
 
 ; 设想已经将二进制列表翻转（先不行进行翻转，设想），进行二进制加一得到一个列表
@@ -192,8 +193,7 @@
 (define (binary_addition lst)
   (cond
     ((null? lst) lst)
-    (else (reverse (binary_add (reverse lst))))
-    ))
+    (else (reverse (binary_add (reverse lst))))))
 
  
 (binary_addition '(1 0 1 1)) 

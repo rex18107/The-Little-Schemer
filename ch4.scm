@@ -29,12 +29,12 @@
 (zero? 1942); #f
 (+ 46 12); 58
 (define (++ n m)
- (cond
-   ; 当m为0时,n作为返回结果,要有终止条件
-  ((zero? m) n)
-  ; 本质上就是每递归一次就在n的基础上加一
-  ; cons构建列表,add1构建数字
-  (else (add1 (++ n (sub1 m))))))
+  (cond
+    ; 当m为0时,n作为返回结果,要有终止条件
+    ((zero? m) n)
+    ; 本质上就是每递归一次就在n的基础上加一
+    ; cons构建列表,add1构建数字
+    (else (add1 (++ n (sub1 m))))))
 (++ 46 12); 58
 
 ; p61
@@ -58,32 +58,33 @@
 
 ; p65
 (define (** n m)
- (cond
-   ; 当m为0时,是递归终止条件
-  ((zero? m) 0)
-  ; 这里的本质上是有m个n相加,每一次递归n就会加一次n,m的个数决定相加几次
-  ((eq? 1 m) n)  (else (+ n (** n (sub1 m))))))
+  (cond
+    ; 当m为0时,是递归终止条件
+    ((zero? m) 0)
+    ; 这里的本质上是有m个n相加,每一次递归n就会加一次n,m的个数决定相加几次
+    ((eq? 1 m) n)  (else (+ n (** n (sub1 m))))))
 (** 2 3); 6
 
 ; p68,tup可为空列表
 ; 这里的tup+函数是针对于相同长度的列表tup1、tup2,将tup1的第一个数字加到tup2的第一个数字上,后面数字以此类推,形成一个新列表
-#; (define (tup+ tup1 tup2)
-    (cond
-      ; 为了确定tup1和tup2长度一致
-     ((and (null? tup1) (null? tup2)) '())
-     ; 先将tup1的第一个数字加到tup2的第一个数字上,尔后再用cons将刚所得数字加入递归所得的列表中
-     (else (cons (+ (car tup1) (car tup2)) (tup+ (cdr tup1) (cdr tup2))))))
+#;
+(define (tup+ tup1 tup2)
+  (cond
+    ; 为了确定tup1和tup2长度一致
+    ((and (null? tup1) (null? tup2)) '())
+    ; 先将tup1的第一个数字加到tup2的第一个数字上,尔后再用cons将刚所得数字加入递归所得的列表中
+    (else (cons (+ (car tup1) (car tup2)) (tup+ (cdr tup1) (cdr tup2))))))
 ;(tup+ '(1 2 3) '(1 2 3))
 
 ; p71
 ; 这是经过修改的tup+函数,这里的两个参数列表长度可以不同
 (define (tup+ tup1 tup2)
- (cond
-   ; 当tup1的长度小于tup2时,返回tup2列表
-  ((null? tup1) tup2)
-  ; 当tup2的长度小于tup1时,返回tup1列表
-  ((null? tup2) tup1)
-  (else (cons (+ (car tup1) (car tup2)) (tup+ (cdr tup1) (cdr tup2))))))
+  (cond
+    ; 当tup1的长度小于tup2时,返回tup2列表
+    ((null? tup1) tup2)
+    ; 当tup2的长度小于tup1时,返回tup1列表
+    ((null? tup2) tup1)
+    (else (cons (+ (car tup1) (car tup2)) (tup+ (cdr tup1) (cdr tup2))))))
 (tup+ '(1 2 3 4) '(1 2 3)); (2 4 6 4)
 
 ; p72
@@ -109,18 +110,19 @@
     (else (> (sub1 n) (sub1 m)))))
 
 ; p74
-#;(define (= n m)
+#;
+(define (= n m)
   (cond
     ; 先判断(zero? n),若结果为#t,就执行(zero? m)
     ((zero? n) (zero? m))
     ((zero? n) #f)
     (else (= (sub1 n) (sub1 m)))))
 ; 判断两个参数是否相等
- (define (= n m)
-   (cond
-     ((> n m) #f)
-     ((< n m) #f)
-     (else #t)))
+(define (= n m)
+  (cond
+    ((> n m) #f)
+    ((< n m) #f)
+    (else #t)))
 ; 求n的m次方
 (define (power n m)
   (cond
@@ -186,18 +188,19 @@
 (define (eqan? a1 a2)
   (cond
     ; 先判断a1跟a2是否都为数字才能用=判断,否则程序会报错
-   ((and (number? a1) (number? a2)) (= a1 a2))
-   ; 此处情况是a1跟a2的字符类型不同无法判断所以返回#f
-   ((or (number? a1) (number? a2)) #f)
-   (else (eq? a1 a2))))
+    ((and (number? a1) (number? a2)) (= a1 a2))
+    ; 此处情况是a1跟a2的字符类型不同无法判断所以返回#f
+    ((or (number? a1) (number? a2)) #f)
+    (else (eq? a1 a2))))
 (eqan? 'a 0); #f
 ; 判断a1与a2是否相等
-#; (define (eqan? a1 a2)
+#;
+(define (eqan? a1 a2)
   (cond
     ; 先判断a1跟a2是否都为数字才能用=判断,否则程序会报错
-   ((and (number? a1) (number? a2)) (= a1 a2))
-   ; 包含了两种情况(1)a1、a2为非数字元素;(2)a1或a2其中一个为数字元素,另一个为非数字元素
-   (else (eq? a1 a2))))
+    ((and (number? a1) (number? a2)) (= a1 a2))
+    ; 包含了两种情况(1)a1、a2为非数字元素;(2)a1或a2其中一个为数字元素,另一个为非数字元素
+    (else (eq? a1 a2))))
 ;上列程序是eqan？函数的化简
 ; 统计a元素在列表lat当中出现的次数
 (define (occur a lat)

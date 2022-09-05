@@ -6,20 +6,20 @@
 ; 判断a 是否为列表l的元素
 (define (member? a l)
   (cond
-   ((null? l) #f)
-   ((eq? (car l) a) #t)
-   (else (member? a (cdr l)))))
+    ((null? l) #f)
+    ((eq? (car l) a) #t)
+    (else (member? a (cdr l)))))
 ; #t
 (member? 'a '(a b a s e c))
 ; p111
 ; 判断列表是否有重复的原子出现,没有的话，返回#t
 (define (set? l)
   (cond
-   ; 列表为空时，表示没有重复的原子出现
-   ((null? l) #t)
-   ; 每一次递归的第一个元素为剩余元素列表成员时，返回#f
-   ((member? (car l) (cdr l)) #f)
-   (else  (set? (cdr l)))))
+    ; 列表为空时，表示没有重复的原子出现
+    ((null? l) #t)
+    ; 每一次递归的第一个元素为剩余元素列表成员时，返回#f
+    ((member? (car l) (cdr l)) #f)
+    (else  (set? (cdr l)))))
 ; #f
 (set? '(apple 3 pear 4 9 apple 3 4))
 
@@ -27,12 +27,12 @@
 ; 将列表中除了第一次出现过的元素以外的其它重复元素剔除
 (define (makeset-v1 l)
   (cond
-   ((null? l) '())
-   ; 如果一个元素在列表后部分有重复出现，则只留下这个元素最后一次出现的情况
-   ((member? (car l) (cdr l))
-    (makeset-v1 (cdr l)))
-   (else (cons (car l)
-              (makeset-v1 (cdr l))))))
+    ((null? l) '())
+    ; 如果一个元素在列表后部分有重复出现，则只留下这个元素最后一次出现的情况
+    ((member? (car l) (cdr l))
+     (makeset-v1 (cdr l)))
+    (else (cons (car l)
+                (makeset-v1 (cdr l))))))
 ; (b a d s e c)
 (makeset-v1 '(a b a c d s e c))
 
@@ -91,7 +91,7 @@
 (eqset? '(2 a 1) '(a 1 2))
 ; 简化eqset?
 (define (eqset-v2? s1 s2)
-   (and (subset? s1 s2) (subset? s2 s1)))
+  (and (subset? s1 s2) (subset? s2 s1)))
 ; #f
 (eqset? '(2 a 1 c) '(a 1 2))
 
@@ -207,8 +207,8 @@
     (else
      ; 将翻转后的列表元素构筑到剩余进行递归调用的元素上
      (cons (build
-             (second (car rel))
-             (first (car rel)))
+            (second (car rel))
+            (first (car rel)))
            (revrel (cdr rel))))))
 ; ((2 a) (3 c) (4 d))
 (revrel '((a 2) (c 3) (d 4)))
@@ -235,7 +235,7 @@
     ((null? l) '())
     (else (cons
            (car (cdr (car l)))
-                (seconds (cdr l))))))
+           (seconds (cdr l))))))
 ; (a d a)
 (seconds '((1 a) (2 d) (3 a)))
 ; p122
