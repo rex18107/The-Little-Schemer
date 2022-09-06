@@ -157,15 +157,16 @@
 ; (d h f)
 (subst 'h 'a '(d a f))
 
-#;(define subst
-    (lambda (new old l)
-      (cond
-        ((null? l) '())
-        ((eq? (car l) old)
-         (cons new (cdr l)))
-        (else
-         (cons (car l)
-               (subst new old (cdr l)))))))
+#;
+(define subst
+  (lambda (new old l)
+    (cond
+      ((null? l) '())
+      ((eq? (car l) old)
+       (cons new (cdr l)))
+      (else
+       (cons (car l)
+             (subst new old (cdr l)))))))
 (define (seqs new old l)
   (cons new l))
 ; (d h b)
@@ -251,10 +252,13 @@
                      (lambda (newl seen)
                        (col (cons (car l) newl)
                             seen))))))
+
 ; p138
 ; 该函数询问第二个参数是否为空列表，忽略了第一个参数
 (define (a-friend x y)
   (null? y))
+; #f
+(multirember&co 'tuna '(tuna) a-friend)
 
 ; p139
 #;
@@ -322,9 +326,12 @@
       (lambda (newl L R)
         (col (cons oldR (cons new newl))
              L (add1 R)))))
+    ; 这个else的成立条件是,lat是有内容的列表(非空),并且lat的第一个元素不
+    ; 等于a
     (else
      (multiinsertLR&co
       new oldL oldR (cdr l)
       (lambda (newl L R)
         (col (cons (car l) newl)
              L R))))))
+
