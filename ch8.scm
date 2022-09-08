@@ -47,8 +47,9 @@
 
 ; p117
 #| 这是一个函数，当传给它一个参数a时，它会返回一个函数
-   (lambd(a s d)a (x)
-   (eq? x a))
+   (lambd(a)
+     (lambda (x)
+       (eq? x a)))
    这里前面的a就是前面传入的参数a
    ，这叫做“Curry-ing” 柯里化|#
 #;
@@ -63,8 +64,8 @@
 ; #f
 ((eq?-c 'a) 'b)
 
-; 这里有三个参数，test？，a，l
 ; p129
+; 这里有三个参数，test?，a，l，移除l列表中的第一个a元素
 (define ((rember-f-v2 test?) a l)
   (cond
     ((null? l) '())
@@ -75,6 +76,7 @@
 ((rember-f-v2 eq?) 'a '(d a c w))
 
 ; rember-f-v2跟rember-f-v3的优缺点？
+; v2中rember-f-v2只有一个参数test?
 (define (rember-f-v3 test? a l)
   (cond
     ((null? l) '())
@@ -110,8 +112,8 @@
 ((insetR-f eq?) 'h 'a '(s d a f ))
 
 ; p131
-; 定义一个函数，cons第二个参数到第三个参数上，
-; 得到一个cons的结果，然后再把第一个参数cons到这个结果上
+; 定义一个函数，cons old到 l 上，得到一个
+; cons的结果，然后再把new cons到这个结果上
 (define (seqL new old l)
   (cons new
         (cons old l)))
@@ -194,6 +196,7 @@
 (define (operator aexp)
   (car aexp))
 
+; 进行算术运算
 (define (value nexp)
   (cond
     ((atom? nexp) nexp)
@@ -234,15 +237,19 @@
 ; (a s d)
 (multiremberT eq?-tuna '(tuna a s d tuna))
 
+; 这里multirember&co的值取决于col函数是什么
 (define (multirember&co a l col)
   (cond
     ((null? l)
+     ; 将条件判断为假的原子收集到列表newl中，条件判断为真收进seen中，
+     ; 最后判断(col newl seen)的值
      (col '() '()))
     ((eq? (car l) a)
-     ; 这里的multirember&co的第三个参数是创建了一个新的函数调用
-     ; 了col,第一个参数是newl,第二个参数是l的第一个元素和seen共
-     ; 同构成的cons列表,这一轮递归以后,col的代码逻辑被改变了
+     ; 这里的multirember&co的第三个参数是创建了一个新的函数(新的col)调用
+     ; 了旧的col,新的col的第一个参数是newl,第二个参数是l的第一个元素和seen共
+     ; 同构成的cons列表,这一轮递归以后,col的代码逻辑被改变了，有了新col
      (multirember&co a (cdr l)
+                     ; newl跟seen都是空列表
                      (lambda (newl seen)
                        ; 这里的调用的col是本轮未递归前的逻辑
                        (col newl
@@ -272,16 +279,20 @@
             (cons 'tuna seen)))
 
 ; 基于(multirember&co a l col),在这col是a-firend,a 是tuna
-; 将条件判断为假的原子收集到列表newl中
 (define (latest-friend newl seen)
   (a-friend
    (cons 'and newl)
    seen))
+; #f
+(multirember&co 'tuna '(and tuna) a-friend)
 
 ; p140
 ; 基于(multirember&co a l col),求出l中等于a的元素个数
 (define (last-friend x y)
   (length x))
+
+; #3，列表包含了三个不为tuna的原子
+(multirember&co 'tuna '(tuna a d tuna tuna c) last-friend)
 
 ; p141
 ; 假设oldL和oldR是不同的原子，将new插入到l中的oldL左边
@@ -308,10 +319,13 @@
   ; 给出add1的定义
   (+ n 1))
 
+(define (lazy n)
+  1)
+  
 ; p143
-(define (multiinsertLR&co
-         new oldL oldR l col)
+(define (multiinsertLR&co new oldL oldR l col)
   (cond
+    ; 这是结束条件
     ((null? l)
      (col '() 0 0))
     ((eq? (car l) oldL)
@@ -331,7 +345,58 @@
     (else
      (multiinsertLR&co
       new oldL oldR (cdr l)
+      ; 此时(car l)不是oldL跟oldR所以对后续列表插入次数统计没有影响
+      ; L和R可以当成计数加零
       (lambda (newl L R)
         (col (cons (car l) newl)
              L R))))))
+;(multiinsertLR&co 'h 'a 'b '(a d w f b a) lazy)
+; p144
+; 求商
+(define (division n m)
+  (cond
+    ; 此时n小于m,商为0
+    ((< n m) 0)
+    (else (+ (division (- n m) m) 1))))
+; 判断是否为偶数
+(define (even? n)
+  (= (* (division n 2) 2) n))
 
+#;
+(define (evens-only* l)
+  (cond
+    ((null? l) '())
+    ((atom? (car l))
+     (cond
+       ((even? (car l))
+        (cons (car l)
+              (evens-only* (cdr l))))
+       (else
+        (evens-only* (cdr l)))))
+    (else
+     (cons
+      (evens-only* (car l))
+      (evens-only* (cdr l))))))
+; ((2 8) 10 ((2) 6) 2)
+;(evens-only* '((9 1 2 8) 3 10 ((9 2) 7 6) 2))
+
+; 从列表l中移除所有奇数项，以构建出一个偶数项的嵌套列表
+; 同时求出该列表参数中所有偶数项乘积以及奇数项的和
+; p145
+#|(define (evens-only*&co l col)
+  (cond
+    ; 这是终止条件
+    ((null? l)
+     (col '() 1 0))
+    ((atom? (car l))
+     (cond
+       ((even? (car l))
+       (evens-only*&co (cdr l)
+                       (lambda (newl p s)
+                         (col (cons (car l) newl)
+                              (* (car l) p) s))))
+       (else (evens-only*&co (cdr l)
+                             (lambda (newl p s)
+                               (col newl
+                                    p (+ (car l) s)))))))
+    (else (evens-only*&co (car l)|#
