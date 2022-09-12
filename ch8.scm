@@ -319,10 +319,17 @@
   ; 给出add1的定义
   (+ n 1))
 
-(define (lazy n)
-  1)
-  
+; 为multiinsertLR&co制定的col，作为测试
+(define (minsertLR&co-col l L R)
+  (cons l
+        (cons L
+              (cons R '()))))
+
 ; p143
+; col根据调用其函数的条件获得三个资料
+; 1.列表，在oldL元素左边插入new，以及在oldR元素右边插入new,
+; 2.在oldL元素左边插入new的次数
+; 3.在oldR元素右边插入new的次数
 (define (multiinsertLR&co new oldL oldR l col)
   (cond
     ; 这是结束条件
@@ -332,16 +339,20 @@
      (multiinsertLR&co
       new oldL oldR (cdr l)
       (lambda (newl L R)
+         ;先将oldL构筑在newl中,再将new构筑其上
         (col (cons new (cons oldL newl))
+             ; 遇到oldL就在L上加一计数
              (add1 L) R))))
     ((eq? (car l) oldR)
      (multiinsertLR&co
       new oldL oldR (cdr l)
       (lambda (newl L R)
+         ;先将oldR构筑在newl中,再将new构筑其上
         (col (cons oldR (cons new newl))
+             ; 遇到oldR就在R上加一计数
              L (add1 R)))))
-    ; 这个else的成立条件是,lat是有内容的列表(非空),并且lat的第一个元素不
-    ; 等于a
+    ; 这个else的成立条件是,lat的第一个元素不
+    ; 等于a,并且lat是有内容的列表(非空),
     (else
      (multiinsertLR&co
       new oldL oldR (cdr l)
@@ -350,7 +361,9 @@
       (lambda (newl L R)
         (col (cons (car l) newl)
              L R))))))
-;(multiinsertLR&co 'h 'a 'b '(a d w f b a) lazy)
+; ((h a d w f b h h a b h h a) 3 2)
+(multiinsertLR&co 'h 'a 'b '(a d w f b a b a) minsertLR&co-col)
+
 ; p144
 ; 求商
 (define (division n m)
@@ -362,6 +375,7 @@
 (define (even? n)
   (= (* (division n 2) 2) n))
 
+; 剔除l列表中的所有奇数，包括其子列表中的奇数
 #;
 (define (evens-only* l)
   (cond
@@ -380,23 +394,34 @@
 ; ((2 8) 10 ((2) 6) 2)
 ;(evens-only* '((9 1 2 8) 3 10 ((9 2) 7 6) 2))
 
+; p145
 ; 从列表l中移除所有奇数项，以构建出一个偶数项的嵌套列表
 ; 同时求出该列表参数中所有偶数项乘积以及奇数项的和
-; p145
-#|(define (evens-only*&co l col)
+#|
+(define (evens-only*&co l col)
   (cond
     ; 这是终止条件
     ((null? l)
+     ; 将col的参数分为三个
+     ; 1.只剩偶数的列表
+     ; 2.偶数项的乘积，结束条件为1传入不会影响结果
+     ; 3.奇数项的和，结束条件为0传入不会影响结果
      (col '() 1 0))
+    ; 判断元素是否为原子
     ((atom? (car l))
      (cond
        ((even? (car l))
        (evens-only*&co (cdr l)
                        (lambda (newl p s)
+                         ; 将原子元素构筑到newl中
                          (col (cons (car l) newl)
+                              ; 为偶数,将p与(car l)相乘
                               (* (car l) p) s))))
        (else (evens-only*&co (cdr l)
                              (lambda (newl p s)
                                (col newl
+                                    ; 为奇数，让s与(car l)相加
                                     p (+ (car l) s)))))))
-    (else (evens-only*&co (car l)|#
+    (else (cons
+           (evens-only*&co (car l)|#
+                           
